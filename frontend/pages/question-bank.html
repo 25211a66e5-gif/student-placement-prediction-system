@@ -56,7 +56,7 @@ input,select,textarea{width:100%;padding:11px;border:1px solid #30476f;border-ra
 </div></div>
 <div class="toast" id="toast"></div>
 <script>
-const API_BASE="";
+const API_BASE="http://127.0.0.1:5000";
 const user=JSON.parse(sessionStorage.getItem("careerpredict_user")||"null");
 if(!user || String(user.role).toLowerCase()!=="admin") location.href="admin-login.html";
 let editingId=null;
