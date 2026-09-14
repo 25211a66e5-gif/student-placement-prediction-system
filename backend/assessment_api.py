@@ -1,7 +1,9 @@
 from flask import request, jsonify
 from database import get_connection
 from ml.readiness_model import calculate_readiness_score
+from ml.placement_model import predict_placement_probability
 import random
+import re
 
 
 # ============================================================
@@ -240,6 +242,142 @@ def select_random_questions(
 
     return selected[:required_count]
 
+
+
+# ============================================================
+# PLACEMENT PROBABILITY
+# ============================================================
+
+def _profile_count(profile, count_key, text_key):
+    """Read a numeric count when available, otherwise count free-text items."""
+    if count_key in profile.keys() and profile[count_key] is not None:
+        try:
+            return int(profile[count_key] or 0)
+        except (TypeError, ValueError):
+            pass
+
+    value = profile[text_key] if text_key in profile.keys() else None
+    if not value:
+        return 0
+
+    parts = re.split(r"[,;\n|]+", str(value))
+    return len([part for part in parts if part.strip()])
+
+
+def calculate_and_save_placement_probability(
+    connection,
+    assessment_id,
+    coding_score=None,
+    interview_score=None
+):
+    """
+    Base ML probability comes from the trained placement model.
+
+    Demonstrated performance is then incorporated transparently:
+      ML probability : 50%
+      Assessment     : 20%
+      Coding Test    : 15%
+      Interview      : 15%
+
+    Components that are not completed yet are excluded and the remaining
+    weights are normalized. Therefore an unfinished coding/interview round
+    is never treated as a score of zero.
+    """
+
+    result = connection.execute("""
+        SELECT
+            ar.technical_score,
+            ar.aptitude_score,
+            ar.logical_score,
+            ar.communication_score,
+            ar.coding_concepts_score,
+            ar.overall_score,
+            ar.coding_test_score,
+            a.user_id
+        FROM assessment_results ar
+        JOIN assessments a ON a.id = ar.assessment_id
+        WHERE ar.assessment_id = ?
+    """, (assessment_id,)).fetchone()
+
+    if result is None:
+        raise ValueError("Assessment result not found.")
+
+    profile = connection.execute("""
+        SELECT *
+        FROM student_profiles
+        WHERE user_id = ?
+    """, (result["user_id"],)).fetchone()
+
+    if profile is None:
+        raise ValueError("Student profile not found.")
+
+    assessment_score = float(result["overall_score"] or 0)
+
+    if coding_score is None:
+        coding_score = result["coding_test_score"]
+
+    if interview_score is None:
+        interview = connection.execute("""
+            SELECT score
+            FROM technical_interviews
+            WHERE assessment_id = ?
+              AND status = 'completed'
+            ORDER BY id DESC
+            LIMIT 1
+        """, (assessment_id,)).fetchone()
+
+        interview_score = interview["score"] if interview else None
+
+    # Support both the dataset-style numeric fields and the existing
+    # profile's free-text fields.
+    cgpa = float(profile["cgpa"] or 0)
+    branch = profile["branch"] or "Other"
+    internships = _profile_count(profile, "internships_count", "internships")
+    projects = _profile_count(profile, "projects_count", "projects")
+    certifications = _profile_count(
+        profile, "certifications_count", "certifications"
+    )
+    backlogs = int(profile["backlogs"] or 0)
+
+    # Use the real trained ML model.
+    base_probability, _ = predict_placement_probability(
+        cgpa=cgpa,
+        branch=branch,
+        internships_count=internships,
+        projects_count=projects,
+        certifications_count=certifications,
+        aptitude_score=float(result["aptitude_score"] or 0),
+        communication_skill_score=float(result["communication_score"] or 0),
+        logical_reasoning_skill_score=float(result["logical_score"] or 0),
+        backlogs=backlogs,
+    )
+
+    base_probability = float(base_probability)
+
+    weighted_total = base_probability * 0.50
+    weight_total = 0.50
+
+    weighted_total += assessment_score * 0.20
+    weight_total += 0.20
+
+    if coding_score is not None:
+        weighted_total += float(coding_score) * 0.15
+        weight_total += 0.15
+
+    if interview_score is not None:
+        weighted_total += float(interview_score) * 0.15
+        weight_total += 0.15
+
+    final_probability = round(weighted_total / weight_total, 2)
+    final_probability = max(0.0, min(100.0, final_probability))
+
+    connection.execute("""
+        UPDATE assessment_results
+        SET placement_probability = ?
+        WHERE assessment_id = ?
+    """, (final_probability, assessment_id))
+
+    return final_probability
 
 # ============================================================
 # REGISTER ASSESSMENT ROUTES
@@ -1014,7 +1152,7 @@ def register_assessment_routes(app):
                     readiness_score,
                     placement_probability
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, 0)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
                 """,
                 (
                     assessment_id,
@@ -1047,8 +1185,15 @@ def register_assessment_routes(app):
 
                     score,
 
-                    readiness_score
+                    readiness_score,
+
+                    0
                 )
+            )
+
+            placement_probability = calculate_and_save_placement_probability(
+                connection,
+                assessment_id
             )
 
 
@@ -1498,6 +1643,12 @@ def register_assessment_routes(app):
                 )
             )
 
+            placement_probability = calculate_and_save_placement_probability(
+                connection,
+                assessment_id,
+                coding_score=score
+            )
+
             # Keep the main assessment record synchronized.
             cursor.execute(
                 """
@@ -1524,7 +1675,9 @@ def register_assessment_routes(app):
                 "overall_score":
                     overall_score,
                 "readiness_score":
-                    round(readiness_score, 2)
+                    round(readiness_score, 2),
+                "placement_probability":
+                    placement_probability
             }), 200
 
         except Exception as error:

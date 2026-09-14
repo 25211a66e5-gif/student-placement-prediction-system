@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from database import get_connection
+from assessment_api import calculate_and_save_placement_probability
 import json
 import random
 import re
@@ -362,6 +363,12 @@ def register_technical_interview_routes(app):
                 score
             )
 
+            placement_probability = calculate_and_save_placement_probability(
+                connection,
+                interview["assessment_id"],
+                interview_score=score
+            )
+
             connection.commit()
 
             return jsonify({
@@ -371,7 +378,8 @@ def register_technical_interview_routes(app):
                 "total_questions": total,
                 "answered_questions": answered,
                 "skipped_questions": skipped,
-                "final_readiness_score": final_readiness
+                "final_readiness_score": final_readiness,
+                "placement_probability": placement_probability
             }), 200
         finally:
             connection.close()
