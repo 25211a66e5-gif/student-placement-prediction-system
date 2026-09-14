@@ -1,0 +1,20 @@
+{
+  "dataset_rows": 100000,
+  "features": [
+    "cgpa",
+    "branch",
+    "internships_count",
+    "projects_count",
+    "certifications_count",
+    "aptitude_score",
+    "communication_skill_score",
+    "logical_reasoning_score",
+    "backlogs"
+  ],
+  "target": "placement_status",
+  "excluded_leakage": "salary_package_lpa",
+  "algorithm": "LogisticRegression with preprocessing pipeline",
+  "validation_accuracy": 0.56385,
+  "validation_roc_auc": 0.574163,
+  "random_state": 42
+}
