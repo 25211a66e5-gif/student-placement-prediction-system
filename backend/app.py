@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from database import get_connection
 from auth import hash_password, verify_password
@@ -10,6 +10,8 @@ from account_api import register_account_routes
 from admin_api import register_admin_routes
 from question_admin_api import register_question_admin_routes
 from user_admin_api import register_user_admin_routes
+
+from pathlib import Path
 
 import subprocess
 import base64
@@ -27,6 +29,48 @@ register_account_routes(app)
 register_admin_routes(app)
 register_question_admin_routes(app)
 register_user_admin_routes(app)
+
+
+# ============================================================
+# FRONTEND SERVING
+# ============================================================
+
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+PAGES_DIR = FRONTEND_DIR / "pages"
+ASSETS_DIR = FRONTEND_DIR / "assets"
+CSS_DIR = FRONTEND_DIR / "css"
+JS_DIR = FRONTEND_DIR / "js"
+
+
+@app.route("/")
+def frontend_home():
+    return send_from_directory(FRONTEND_DIR, "index.html")
+
+
+@app.route("/index.html")
+def frontend_index():
+    return send_from_directory(FRONTEND_DIR, "index.html")
+
+
+@app.route("/pages/<path:filename>")
+def frontend_page(filename):
+    return send_from_directory(PAGES_DIR, filename)
+
+
+@app.route("/assets/<path:filename>")
+def frontend_asset(filename):
+    return send_from_directory(ASSETS_DIR, filename)
+
+
+@app.route("/css/<path:filename>")
+def frontend_css(filename):
+    return send_from_directory(CSS_DIR, filename)
+
+
+@app.route("/js/<path:filename>")
+def frontend_js(filename):
+    return send_from_directory(JS_DIR, filename)
+
 
 
 TIMEOUT_SECONDS = 5

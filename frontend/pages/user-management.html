@@ -15,7 +15,7 @@
 </div><div class="toast" id="toast"></div>
 <div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h2 id="modalTitle">User Details</h2><button class="close" id="closeModal">×</button></div><div id="modalContent"></div></div></div>
 <script>
-const API_BASE="http://127.0.0.1:5000";const user=JSON.parse(sessionStorage.getItem("careerpredict_user")||"null");
+const API_BASE="";const user=JSON.parse(sessionStorage.getItem("careerpredict_user")||"null");
 if(!user||String(user.role).toLowerCase()!=="admin")location.href="admin-login.html";
 let users=[];let searchTimer=null;
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
