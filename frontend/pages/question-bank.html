@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Question Bank | CareerPredict Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#071124;color:#edf5ff}
+nav{height:70px;border-bottom:1px solid #203454;background:#09172e;display:flex;align-items:center;justify-content:space-between;padding:0 4%}
+.brand{font-size:22px;font-weight:800}.brand span{color:#71edff}.navright{display:flex;gap:18px;align-items:center}.navright a,.navright button{color:#a9c0e4;text-decoration:none;background:none;border:0;cursor:pointer}
+.wrap{width:min(1400px,94%);margin:30px auto 60px}.hero{margin-bottom:24px}.eyebrow{color:#71edff;font-size:12px;font-weight:800;letter-spacing:2px}.hero h1{font-size:34px;margin:7px 0}.hero p{color:#8ea7ce}
+.grid{display:grid;grid-template-columns:400px 1fr;gap:20px}.card{border:1px solid #263d63;border-radius:18px;background:#0a1932;padding:22px}
+h2{margin:0 0 17px;font-size:20px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;color:#9db6dd;font-size:12px;margin-bottom:6px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #30476f;border-radius:9px;background:#07152d;color:#fff;outline:none}textarea{min-height:80px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:#71edff}.full{grid-column:1/-1}
+.actions{display:flex;gap:9px;margin-top:15px}.primary,.secondary,.danger{padding:10px 14px;border-radius:9px;border:0;cursor:pointer;font-weight:700}.primary{background:linear-gradient(90deg,#48dff8,#8a7dff);color:#04101f}.secondary{background:#132744;color:#b9cdf0;border:1px solid #30476f}.danger{background:#3b1820;color:#ffabb4;border:1px solid #73313d}
+.filters{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr auto;gap:9px;margin-bottom:15px}.count{color:#71edff;font-size:13px}
+.question{border:1px solid #263d63;border-radius:14px;padding:16px;margin-bottom:12px;background:#0b1d39}.qhead{display:flex;justify-content:space-between;gap:12px}.qtitle{font-weight:800}.meta{color:#8fa8ce;font-size:12px;margin:6px 0 12px}.badge{padding:4px 8px;border-radius:99px;font-size:11px;background:#123e46;color:#71edff;height:max-content}.badge.off{background:#38212a;color:#ffadb6}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:7px;color:#a9bfe0;font-size:13px}.correct{color:#71edff;font-weight:700}.explain{margin-top:10px;color:#91a9ca;font-size:12px}.qactions{display:flex;gap:8px;margin-top:13px}.empty{text-align:center;color:#718bb4;padding:40px}.toast{position:fixed;right:22px;bottom:22px;padding:12px 16px;background:#10233f;border:1px solid #36537f;border-radius:10px;display:none;max-width:400px}
+@media(max-width:1050px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}.options{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav><div class="brand">Career<span>Predict</span> <small style="font-size:11px;color:#7894bd">ADMIN</small></div>
+<div class="navright"><a href="admin-dashboard.html">Company Eligibility</a><a href="question-bank.html">Question Bank</a><button id="logout">Logout</button></div></nav>
+
+<div class="wrap">
+<section class="hero"><div class="eyebrow">ADMINISTRATION</div><h1>Question Bank Management</h1><p>Create and maintain the MCQ bank used by the Student Placement Assessment.</p></section>
+<div class="grid">
+<section class="card">
+<h2 id="formTitle">Add Question</h2>
+<form id="form"><div class="formgrid">
+<div><label>Section</label><select id="section"><option>Technical</option><option>Aptitude</option><option>Logical Reasoning</option><option>Communication</option><option>Coding Concepts</option></select></div>
+<div><label>Difficulty</label><select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+<div class="full"><label>Topic</label><input id="topic" placeholder="e.g. OOP, SQL, Probability"></div>
+<div class="full"><label>Question</label><textarea id="question_text" required></textarea></div>
+<div><label>Option A</label><input id="option_a" required></div><div><label>Option B</label><input id="option_b" required></div>
+<div><label>Option C</label><input id="option_c" required></div><div><label>Option D</label><input id="option_d" required></div>
+<div><label>Correct Answer</label><select id="correct_answer"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+<div><label>Branch (optional)</label><input id="branch" placeholder="CSE or CSE, ECE"></div>
+<div class="full"><label>Target Job Role (optional)</label><input id="target_role" placeholder="Software Developer"></div>
+<div class="full"><label>Explanation shown after assessment</label><textarea id="explanation" placeholder="Explain why the correct answer is correct."></textarea></div>
+</div>
+<div class="actions"><button class="primary" id="saveBtn" type="submit">Add Question</button><button class="secondary" id="cancelBtn" type="button" style="display:none">Cancel</button></div>
+</form></section>
+
+<section class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px"><h2>Questions</h2><span class="count" id="count">Loading...</span></div>
+<div class="filters">
+<input id="search" placeholder="Search question, topic, role...">
+<select id="filterSection"><option value="">All Sections</option><option>Technical</option><option>Aptitude</option><option>Logical Reasoning</option><option>Communication</option><option>Coding Concepts</option></select>
+<select id="filterDifficulty"><option value="">All Difficulty</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
+<select id="filterActive"><option value="">All Status</option><option value="1">Active</option><option value="0">Inactive</option></select>
+<button class="secondary" id="refresh">Refresh</button>
+</div>
+<div id="list"></div>
+</section>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+const API_BASE="http://127.0.0.1:5000";
+const user=JSON.parse(sessionStorage.getItem("careerpredict_user")||"null");
+if(!user || String(user.role).toLowerCase()!=="admin") location.href="admin-login.html";
+let editingId=null;
+
+const $=id=>document.getElementById(id);
+function toast(s){$("toast").textContent=s;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2600)}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function set(id,v){$(id).value=v??""}
+function resetForm(){editingId=null;$("formTitle").textContent="Add Question";$("saveBtn").textContent="Add Question";$("cancelBtn").style.display="none";$("form").reset();$("difficulty").value="Medium";$("correct_answer").value="A"}
+$("cancelBtn").onclick=resetForm;
+
+async function load(){
+ try{
+  const p=new URLSearchParams({user_id:user.id});
+  if($("search").value.trim())p.set("search",$("search").value.trim());
+  if($("filterSection").value)p.set("section",$("filterSection").value);
+  if($("filterDifficulty").value)p.set("difficulty",$("filterDifficulty").value);
+  if($("filterActive").value)p.set("active",$("filterActive").value);
+  const r=await fetch(`${API_BASE}/api/admin/questions?${p}`);const d=await r.json();
+  if(!r.ok)throw Error(d.error||"Unable to load questions.");
+  $("count").textContent=`${d.total} questions`;render(d.questions||[]);
+ }catch(e){toast(e.message)}
+}
+function render(items){
+ if(!items.length){$("list").innerHTML='<div class="empty">No questions match the current filters.</div>';return}
+ $("list").innerHTML=items.map(q=>`
+ <article class="question">
+  <div class="qhead"><div><div class="qtitle">#${q.id} — ${esc(q.question_text)}</div><div class="meta">${esc(q.section)} · ${esc(q.topic)} · ${esc(q.difficulty)}${q.branch?' · '+esc(q.branch):''}${q.target_role?' · '+esc(q.target_role):''}</div></div><span class="badge ${q.is_active?'':'off'}">${q.is_active?'ACTIVE':'INACTIVE'}</span></div>
+  <div class="options"><div class="${q.correct_answer==='A'?'correct':''}"><b>A.</b> ${esc(q.option_a)}</div><div class="${q.correct_answer==='B'?'correct':''}"><b>B.</b> ${esc(q.option_b)}</div><div class="${q.correct_answer==='C'?'correct':''}"><b>C.</b> ${esc(q.option_c)}</div><div class="${q.correct_answer==='D'?'correct':''}"><b>D.</b> ${esc(q.option_d)}</div></div>
+  ${q.explanation?`<div class="explain"><b>Explanation:</b> ${esc(q.explanation)}</div>`:""}
+  <div class="qactions"><button class="secondary" onclick='edit(${JSON.stringify(q)})'>Edit</button><button class="secondary" onclick="toggle(${q.id},${!q.is_active})">${q.is_active?'Deactivate':'Activate'}</button><button class="danger" onclick="removeQ(${q.id})">Delete</button></div>
+ </article>`).join("");
+}
+window.edit=q=>{editingId=q.id;$("formTitle").textContent="Edit Question";$("saveBtn").textContent="Update Question";$("cancelBtn").style.display="inline-block";["section","difficulty","topic","question_text","option_a","option_b","option_c","option_d","correct_answer","branch","target_role","explanation"].forEach(k=>set(k,q[k]));scrollTo({top:0,behavior:"smooth"})};
+$("form").onsubmit=async e=>{
+ e.preventDefault();
+ const payload={section:$("section").value,difficulty:$("difficulty").value,topic:$("topic").value,question_text:$("question_text").value,option_a:$("option_a").value,option_b:$("option_b").value,option_c:$("option_c").value,option_d:$("option_d").value,correct_answer:$("correct_answer").value,branch:$("branch").value,target_role:$("target_role").value,explanation:$("explanation").value,is_active:true};
+ const url=editingId?`${API_BASE}/api/admin/questions/${editingId}?user_id=${user.id}`:`${API_BASE}/api/admin/questions?user_id=${user.id}`;
+ try{const r=await fetch(url,{method:editingId?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok)throw Error(d.error||"Save failed.");toast(editingId?"Question updated.":"Question added.");resetForm();load()}catch(e){toast(e.message)}
+};
+window.toggle=async(id,state)=>{try{const r=await fetch(`${API_BASE}/api/admin/questions/${id}/status?user_id=${user.id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({is_active:state})});const d=await r.json();if(!r.ok)throw Error(d.error||"Status update failed.");load()}catch(e){toast(e.message)}};
+window.removeQ=async id=>{if(!confirm("Delete this question permanently? If it has historical attempts, it will be kept and can only be deactivated."))return;try{const r=await fetch(`${API_BASE}/api/admin/questions/${id}?user_id=${user.id}`,{method:"DELETE"});const d=await r.json();if(!r.ok)throw Error(d.suggestion?`${d.error} ${d.suggestion}`:(d.error||"Delete failed."));toast("Question deleted.");load()}catch(e){toast(e.message)}};
+$("refresh").onclick=load;["search","filterSection","filterDifficulty","filterActive"].forEach(id=>$(id).addEventListener("input",load));$("logout").onclick=()=>{sessionStorage.removeItem("careerpredict_user");location.href="login.html"};load();
+</script>
+</body></html>

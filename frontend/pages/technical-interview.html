@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Simulated Technical Interview | Student Placement Prediction System</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+      radial-gradient(circle at top left,rgba(0,180,255,.12),transparent 30%),
+      radial-gradient(circle at bottom right,rgba(130,70,255,.12),transparent 30%),
+      #050914;
+    color:#e8f1ff;min-height:100vh
+}
+.header{
+    height:76px;background:rgba(5,10,22,.95);
+    border-bottom:1px solid rgba(80,170,255,.15);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 40px;position:sticky;top:0;z-index:10
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand img{width:48px;height:48px;object-fit:contain}
+.brand-text{font-size:18px;font-weight:700}
+.brand-subtitle{font-size:11px;color:#6ea8ff;margin-top:3px;letter-spacing:1px}
+.back{
+    text-decoration:none;color:#dcecff;border:1px solid rgba(100,180,255,.3);
+    padding:10px 18px;border-radius:9px;background:rgba(20,50,90,.35)
+}
+.container{width:min(1050px,94%);margin:35px auto 70px}
+.title{text-align:center;margin-bottom:25px}
+.title h1{
+    font-size:31px;margin-bottom:8px;
+    background:linear-gradient(90deg,#65d9ff,#8f7cff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent
+}
+.title p{color:#8295b5;font-size:14px}
+.card{
+    background:rgba(10,20,38,.88);
+    border:1px solid rgba(100,160,230,.15);
+    border-radius:18px;padding:25px;margin-bottom:20px
+}
+.interview-head{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px
+}
+.metric{
+    background:rgba(255,255,255,.035);border:1px solid rgba(100,160,230,.12);
+    border-radius:12px;padding:15px;text-align:center
+}
+.metric-value{font-size:24px;font-weight:700;color:#7fcfff;margin-bottom:5px}
+.metric-label{font-size:11px;color:#8295b5}
+.progress{
+    height:8px;background:rgba(255,255,255,.07);border-radius:8px;overflow:hidden;margin-top:14px
+}
+.progress-fill{
+    height:100%;width:0;background:linear-gradient(90deg,#36d8ff,#856cff);
+    transition:width .3s
+}
+.question-meta{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;margin-bottom:18px
+}
+.badge{
+    display:inline-block;padding:6px 10px;border-radius:20px;
+    background:rgba(95,156,255,.09);border:1px solid rgba(95,156,255,.2);
+    color:#8dccff;font-size:11px;font-weight:700
+}
+.question{
+    font-size:22px;line-height:1.55;color:#eef5ff;margin-bottom:22px
+}
+textarea{
+    width:100%;min-height:210px;resize:vertical;
+    background:#050b18;color:#e8f1ff;border:1px solid rgba(100,170,240,.22);
+    border-radius:12px;padding:16px;font-size:15px;line-height:1.6;outline:none
+}
+textarea:focus{border-color:rgba(80,190,255,.65);box-shadow:0 0 0 3px rgba(60,160,255,.08)}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:16px}
+button,.finish{
+    border:none;cursor:pointer;padding:12px 20px;border-radius:10px;
+    font-weight:700;font-size:14px
+}
+.primary{color:white;background:linear-gradient(90deg,#167fc1,#664bc0)}
+.secondary{color:#dcecff;background:rgba(30,50,80,.5);border:1px solid rgba(100,160,230,.25)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.feedback{
+    display:none;margin-top:16px;padding:14px;border-radius:10px;
+    background:rgba(69,229,154,.07);border:1px solid rgba(69,229,154,.18);
+    color:#bfead6;line-height:1.55
+}
+.error{
+    display:none;padding:18px;border-radius:12px;
+    background:rgba(255,70,90,.08);border:1px solid rgba(255,70,90,.3);color:#ff9ca8
+}
+.loading{text-align:center;padding:55px;color:#7fcfff}
+#interviewArea,#completeArea{display:none}
+.complete{text-align:center}
+.final-score{
+    font-size:62px;font-weight:800;margin:10px 0;
+    background:linear-gradient(90deg,#58ddff,#9c7cff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent
+}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.note{color:#8295b5;font-size:12px;line-height:1.6;margin-top:15px}
+@media(max-width:700px){
+ .header{padding:0 16px}.brand-text{font-size:14px}
+ .interview-head,.summary-grid{grid-template-columns:repeat(2,1fr)}
+ .question{font-size:19px}.actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <img src="../../assets/careerpredict-logo.png" alt="Student Placement Prediction System">
+    <div>
+      <div class="brand-text">Student Placement Predictor</div>
+      <div class="brand-subtitle">MACHINE LEARNING SYSTEM</div>
+    </div>
+  </div>
+  <a class="back" id="backButton" href="assessment-result.html">← Assessment Result</a>
+</header>
+
+<main class="container">
+  <div class="title">
+    <h1>🤖 AI-Simulated Technical Interview</h1>
+    <p>Role-specific technical interview practice based on your selected career path.</p>
+  </div>
+
+  <div id="loading" class="loading">Preparing your technical interview...</div>
+  <div id="error" class="error"></div>
+
+  <section id="interviewArea">
+    <div class="card">
+      <div class="interview-head">
+        <div class="metric"><div class="metric-value" id="role">--</div><div class="metric-label">TARGET ROLE</div></div>
+        <div class="metric"><div class="metric-value" id="questionNo">1 / 8</div><div class="metric-label">QUESTION</div></div>
+        <div class="metric"><div class="metric-value" id="answered">0</div><div class="metric-label">ANSWERED</div></div>
+        <div class="metric"><div class="metric-value" id="skipped">0</div><div class="metric-label">SKIPPED</div></div>
+      </div>
+      <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="question-meta">
+        <span class="badge">TECHNICAL INTERVIEW</span>
+        <span class="badge" id="statusBadge">Not answered</span>
+      </div>
+      <div class="question" id="questionText">Loading question...</div>
+      <textarea id="answer" placeholder="Type your answer here. Explain the concept clearly and include an example when appropriate."></textarea>
+      <div id="feedback" class="feedback"></div>
+      <div class="actions">
+        <button class="secondary" id="skipButton" onclick="skipCurrent()">Skip Question</button>
+        <button class="primary" id="submitButton" onclick="submitCurrent()">Submit Answer →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="completeArea" class="card complete">
+    <h2>🎯 Technical Interview Completed</h2>
+    <div class="final-score" id="finalScore">0%</div>
+    <p id="finalMessage">Your interview evaluation is complete.</p>
+    <div class="summary-grid">
+      <div class="metric"><div class="metric-value" id="finalAnswered">0</div><div class="metric-label">ANSWERED</div></div>
+      <div class="metric"><div class="metric-value" id="finalSkipped">0</div><div class="metric-label">SKIPPED</div></div>
+      <div class="metric"><div class="metric-value" id="finalReadiness">--</div><div class="metric-label">FINAL JOB READINESS</div></div>
+    </div>
+    <p class="note">
+      The interview score uses a transparent keyword-based rubric. It is an AI-simulated assessment,
+      not a human interview or a guarantee of hiring.
+    </p>
+    <div style="margin-top:22px">
+      <a class="finish primary" id="resultButton" href="#">View Final Assessment Result →</a>
+    </div>
+  </section>
+</main>
+
+<script>
+const API_BASE = "http://127.0.0.1:5000";
+const params = new URLSearchParams(window.location.search);
+const assessmentId = params.get("assessment_id");
+
+if (assessmentId) {
+  const resultUrl = `assessment-result.html?assessment_id=${encodeURIComponent(assessmentId)}`;
+  const backButton = document.getElementById("backButton");
+  if (backButton) backButton.href = resultUrl;
+}
+
+const user = JSON.parse(sessionStorage.getItem("careerpredict_user") || "null");
+const userId = user?.id;
+
+let interviewId = null;
+let questions = [];
+let currentIndex = 0;
+
+const $ = id => document.getElementById(id);
+
+function showError(message){
+  $("loading").style.display = "none";
+  $("interviewArea").style.display = "none";
+  $("error").style.display = "block";
+  $("error").textContent = message;
+}
+
+async function startInterview(){
+  if(!assessmentId || !userId){
+    showError("Assessment ID or logged-in student information is missing.");
+    return;
+  }
+
+  try{
+    const response = await fetch(`${API_BASE}/api/interview/start`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({assessment_id:Number(assessmentId),user_id:Number(userId)})
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.error || "Unable to start interview.");
+
+    interviewId = data.interview_id;
+    $("role").textContent = data.target_job_role || "Technical Role";
+    await loadQuestions();
+  }catch(error){
+    console.error(error);
+    showError(error.message);
+  }
+}
+
+async function loadQuestions(){
+  const response = await fetch(
+    `${API_BASE}/api/interview/${interviewId}/questions?user_id=${encodeURIComponent(userId)}`
+  );
+  const data = await response.json();
+  if(!response.ok) throw new Error(data.error || "Unable to load interview questions.");
+
+  questions = data.questions || [];
+  $("loading").style.display = "none";
+
+  if(!questions.length){
+    throw new Error("No interview questions were assigned.");
+  }
+
+  $("interviewArea").style.display = "block";
+  currentIndex = questions.findIndex(q => q.status === "skipped" && !q.answer);
+  if(currentIndex < 0) currentIndex = 0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = questions[currentIndex];
+  $("questionNo").textContent = `${currentIndex + 1} / ${questions.length}`;
+  $("questionText").textContent = q.question_text || "Question unavailable.";
+  $("answer").value = q.answer || "";
+  $("statusBadge").textContent = q.answer ? "Answered" : (q.status === "skipped" ? "Skipped" : "Not answered");
+  $("progressFill").style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+  $("submitButton").disabled = false;
+  $("skipButton").disabled = false;
+  $("feedback").style.display = "none";
+}
+
+async function saveAnswer(answer){
+  const q = questions[currentIndex];
+
+  const response = await fetch(`${API_BASE}/api/interview/answer`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      user_id:Number(userId),
+      interview_id:Number(interviewId),
+      question_id:Number(q.question_id),
+      answer:answer
+    })
+  });
+
+  const data = await response.json();
+  if(!response.ok) throw new Error(data.error || "Unable to save answer.");
+
+  q.answer = answer;
+  q.status = data.status;
+  q.score = data.score;
+  q.feedback = data.feedback;
+
+  $("answered").textContent = data.answered_questions;
+  $("skipped").textContent = data.skipped_questions;
+  $("feedback").textContent = `${data.score}% — ${data.feedback}`;
+  $("feedback").style.display = "block";
+}
+
+async function submitCurrent(){
+  const answer = $("answer").value.trim();
+  if(!answer){
+    $("answer").focus();
+    $("feedback").textContent = "Please enter an answer or use Skip Question.";
+    $("feedback").style.display = "block";
+    return;
+  }
+
+  try{
+    $("submitButton").disabled = true;
+    $("skipButton").disabled = true;
+    await saveAnswer(answer);
+
+    setTimeout(nextQuestion, 500);
+  }catch(error){
+    $("submitButton").disabled = false;
+    $("skipButton").disabled = false;
+    showError(error.message);
+  }
+}
+
+async function skipCurrent(){
+  try{
+    $("submitButton").disabled = true;
+    $("skipButton").disabled = true;
+    await saveAnswer(null);
+    nextQuestion();
+  }catch(error){
+    $("submitButton").disabled = false;
+    $("skipButton").disabled = false;
+    showError(error.message);
+  }
+}
+
+async function nextQuestion(){
+  if(currentIndex < questions.length - 1){
+    currentIndex++;
+    renderQuestion();
+    return;
+  }
+
+  await finishInterview();
+}
+
+async function finishInterview(){
+  try{
+    const response = await fetch(`${API_BASE}/api/interview/finish`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        user_id:Number(userId),
+        interview_id:Number(interviewId)
+      })
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.error || "Unable to finish interview.");
+
+    $("interviewArea").style.display = "none";
+    $("completeArea").style.display = "block";
+    $("finalScore").textContent = `${Math.round(data.score)}%`;
+    $("finalAnswered").textContent = data.answered_questions;
+    $("finalSkipped").textContent = data.skipped_questions;
+    $("finalReadiness").textContent =
+      data.final_readiness_score == null ? "--" : `${Math.round(data.final_readiness_score)}%`;
+
+    $("finalMessage").textContent =
+      data.score >= 80
+        ? "Strong technical interview performance. Keep practicing role-specific depth."
+        : data.score >= 55
+          ? "Good foundation. Strengthen technical explanations and practical examples."
+          : "Focus on your core technical concepts and practice explaining them clearly.";
+
+    $("resultButton").href =
+      `assessment-result.html?assessment_id=${encodeURIComponent(assessmentId)}`;
+  }catch(error){
+    showError(error.message);
+  }
+}
+
+startInterview().catch(error => showError(error.message));
+
+// Interview integrity: disable copy, cut, paste, context menu, and clipboard shortcuts.
+(function () {
+  const blockClipboard = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  document.addEventListener("copy", blockClipboard, true);
+  document.addEventListener("cut", blockClipboard, true);
+  document.addEventListener("paste", blockClipboard, true);
+  document.addEventListener("contextmenu", blockClipboard, true);
+
+  document.addEventListener("keydown", function (event) {
+    const key = String(event.key || "").toLowerCase();
+    const modifier = event.ctrlKey || event.metaKey;
+
+    if (modifier && ["c", "x", "v"].includes(key)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
+})();
+
+</script>
+</body>
+</html>

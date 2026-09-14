@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Assessment Result | Student Placement Prediction System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(0, 180, 255, 0.12), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(130, 70, 255, 0.12), transparent 30%),
+                #050914;
+            color: #e8f1ff;
+            min-height: 100vh;
+        }
+
+        .header {
+            height: 76px;
+            background: rgba(5, 10, 22, 0.95);
+            border-bottom: 1px solid rgba(80, 170, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .brand-text {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #6ea8ff;
+            margin-top: 3px;
+            letter-spacing: 1px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #dcecff;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            padding: 10px 18px;
+            border-radius: 9px;
+            background: rgba(20, 50, 90, 0.35);
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(30, 90, 150, 0.45);
+            border-color: rgba(100, 200, 255, 0.6);
+        }
+
+        .container {
+            width: min(1200px, 94%);
+            margin: 35px auto 70px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #65d9ff, #8f7cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-title p {
+            color: #8295b5;
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: #7fcfff;
+            font-size: 17px;
+        }
+
+        .error {
+            display: none;
+            text-align: center;
+            background: rgba(255, 70, 90, 0.08);
+            border: 1px solid rgba(255, 70, 90, 0.3);
+            border-radius: 14px;
+            padding: 30px;
+            color: #ff9ca8;
+        }
+
+        .result-content {
+            display: none;
+        }
+
+        .score-card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20, 45, 80, 0.75),
+                    rgba(13, 20, 40, 0.9)
+                );
+            border: 1px solid rgba(70, 180, 255, 0.22);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
+        }
+
+        .score-label {
+            color: #8ca3c7;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .score {
+            font-size: 64px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #58ddff, #9c7cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .score-text {
+            color: #9db0cf;
+            margin-top: 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(12, 23, 43, 0.88);
+            border: 1px solid rgba(100, 160, 230, 0.15);
+            border-radius: 15px;
+            padding: 22px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            color: #8295b5;
+            font-size: 13px;
+        }
+
+        .correct {
+            color: #45e59a;
+        }
+
+        .wrong {
+            color: #ff6577;
+        }
+
+        .skipped {
+            color: #ffd27c;
+        }
+
+        .answered {
+            color: #63cfff;
+        }
+
+        .section-card,
+        .review-card {
+            background: rgba(10, 20, 38, 0.88);
+            border: 1px solid rgba(100, 160, 230, 0.15);
+            border-radius: 17px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-card h2,
+        .review-card h2 {
+            font-size: 19px;
+            margin-bottom: 20px;
+            color: #dcecff;
+        }
+
+        .section-row {
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .section-name {
+            color: #dcecff;
+        }
+
+        .section-score {
+            color: #7fcfff;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 9px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #36d8ff, #856cff);
+            transition: width 0.5s ease;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .question-review {
+            background: rgba(3, 10, 23, 0.75);
+            border: 1px solid rgba(100, 160, 230, 0.12);
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+        .question-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 14px;
+        }
+
+        .question-number {
+            color: #76cfff;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status.correct {
+            background: rgba(69, 229, 154, 0.1);
+            border: 1px solid rgba(69, 229, 154, 0.25);
+        }
+
+        .status.wrong {
+            background: rgba(255, 101, 119, 0.1);
+            border: 1px solid rgba(255, 101, 119, 0.25);
+        }
+
+        .status.skipped {
+            background: rgba(255, 210, 124, 0.1);
+            border: 1px solid rgba(255, 210, 124, 0.25);
+        }
+
+        .question-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e4edff;
+            margin-bottom: 15px;
+        }
+
+        .answer-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .answer-item {
+            background: rgba(255, 255, 255, 0.035);
+            border-radius: 9px;
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        .answer-label {
+            color: #7489aa;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .answer-value {
+            color: #dcecff;
+            word-break: break-word;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 14px;
+            background: rgba(80, 140, 255, 0.06);
+            border-left: 3px solid #5f9cff;
+            border-radius: 7px;
+            color: #9db0cf;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
+        /* ============================================================
+           PLACEMENT PREDICTION & JOB READINESS
+           ============================================================ */
+
+        .prediction-section {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 16px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(10, 24, 48, 0.96),
+                    rgba(24, 18, 54, 0.96)
+                );
+            border: 1px solid rgba(100, 190, 255, 0.22);
+        }
+
+        .prediction-section h2 {
+            margin-bottom: 7px;
+        }
+
+        .prediction-subtitle {
+            color: #8295b5;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .prediction-card {
+            padding: 20px 15px;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(100, 160, 230, 0.12);
+            text-align: center;
+        }
+
+        .prediction-value {
+            font-size: 29px;
+            font-weight: 700;
+            color: #e8f1ff;
+            margin-bottom: 7px;
+        }
+
+        .prediction-label {
+            font-size: 12px;
+            color: #8295b5;
+        }
+
+        .prediction-status {
+            margin-top: 18px;
+            padding: 14px;
+            text-align: center;
+            border-radius: 10px;
+            background: rgba(69, 229, 154, 0.07);
+            border: 1px solid rgba(69, 229, 154, 0.18);
+            color: #45e59a;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .prediction-note {
+            margin-top: 12px;
+            color: #8295b5;
+            font-size: 11px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .recommendation {
+            margin-top: 30px;
+            padding: 24px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(40, 70, 130, 0.22),
+                    rgba(90, 50, 150, 0.16)
+                );
+            border: 1px solid rgba(110, 150, 255, 0.2);
+            border-radius: 16px;
+        }
+
+        .recommendation h2 {
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+
+        .recommendation p {
+            color: #9db0cf;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 13px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .primary-btn {
+            color: white;
+            background: linear-gradient(90deg, #167fc1, #664bc0);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(80, 120, 255, 0.25);
+        }
+
+        .secondary-btn {
+            color: #dcecff;
+            background: rgba(30, 50, 80, 0.5);
+            border: 1px solid rgba(100, 160, 230, 0.25);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(50, 80, 120, 0.55);
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .analysis-card {
+            background: rgba(10, 20, 38, 0.88);
+            border: 1px solid rgba(100, 160, 230, 0.15);
+            border-radius: 17px;
+            padding: 24px;
+        }
+
+        .analysis-wide {
+            grid-column: 1 / -1;
+        }
+
+        .analysis-icon {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .analysis-card h2 {
+            font-size: 19px;
+            color: #dcecff;
+            margin-bottom: 14px;
+        }
+
+        .analysis-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .analysis-item {
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(100,160,230,0.10);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #c9d8ef;
+            line-height: 1.55;
+            font-size: 13px;
+        }
+
+        .analysis-item strong {
+            color: #f0f6ff;
+        }
+
+        .analysis-muted,
+        .analysis-note {
+            color: #8295b5;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .company-card {
+            background: rgba(3,10,23,0.7);
+            border: 1px solid rgba(100,160,230,0.12);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .company-name {
+            color: #e4edff;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .company-status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .company-status.eligible {
+            color: #45e59a;
+            background: rgba(69,229,154,0.10);
+            border: 1px solid rgba(69,229,154,0.22);
+        }
+
+        .company-status.not-eligible {
+            color: #ff9ca8;
+            background: rgba(255,101,119,0.10);
+            border: 1px solid rgba(255,101,119,0.22);
+        }
+
+        .company-reason {
+            color: #8295b5;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        .solutions-toggle {
+            display: flex;
+            justify-content: center;
+            margin: 18px 0 20px;
+        }
+
+        .solutions-btn {
+            border: none;
+            cursor: pointer;
+            padding: 12px 22px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #167fc1, #664bc0);
+        }
+
+        #companyEligibilitySection {
+            margin-top: 25px;
+        }
+
+        #questionReviewSection {
+            margin-top: 28px;
+        }
+
+        .solutions-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(80, 120, 255, 0.25);
+        }
+
+        .solution-answer {
+            display: none;
+        }
+
+        .solution-explanation {
+            display: none;
+        }
+
+        @media (max-width: 800px) {
+            .header {
+                padding: 0 18px;
+            }
+
+            .brand-text {
+                font-size: 14px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .answer-box {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-wide {
+                grid-column: auto;
+            }
+
+            .company-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title h1 {
+                font-size: 25px;
+            }
+
+            .prediction-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score {
+                font-size: 50px;
+            }
+
+            .score-card {
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="brand">
+        <img src="../../assets/careerpredict-logo.png"
+             alt="Student Placement Prediction System">
+
+        <div>
+            <div class="brand-text">
+                Student Placement Predictor
+            </div>
+
+            <div class="brand-subtitle">
+                MACHINE LEARNING SYSTEM
+            </div>
+        </div>
+    </div>
+
+    <a href="profile.html" class="back-btn">
+        ← Dashboard
+    </a>
+
+</header>
+
+
+<main class="container">
+
+    <div class="page-title">
+        <h1>Assessment Result</h1>
+        <p>
+            Student Placement Prediction System using Machine Learning
+        </p>
+    </div>
+
+
+    <div id="loading" class="loading">
+        Loading your assessment result...
+    </div>
+
+
+    <div id="error" class="error">
+        <h2>Unable to load result</h2>
+        <p id="errorMessage">
+            Something went wrong while loading your assessment.
+        </p>
+    </div>
+
+
+    <div id="resultContent" class="result-content">
+
+        <!-- SCORE -->
+
+        <section class="score-card">
+
+            <div class="score-label">
+                Overall Assessment Score
+            </div>
+
+            <div class="score" id="overallScore">
+                0%
+            </div>
+
+            <div class="score-text" id="scoreText">
+                Assessment completed
+            </div>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-number correct"
+                     id="correctCount">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Correct
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-number wrong"
+                     id="wrongCount">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Wrong
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-number skipped"
+                     id="skippedCount">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Skipped
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-number answered"
+                     id="answeredCount">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Answered
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- SECTION PERFORMANCE -->
+
+        <section class="section-card">
+
+            <h2>
+                Section-wise Performance
+            </h2>
+
+            <div id="sectionScores">
+                <!-- Filled by JavaScript -->
+            </div>
+
+        </section>
+
+
+        <!-- PLACEMENT PREDICTION & JOB READINESS -->
+
+        <section class="prediction-section">
+
+            <h2>
+                🎯 Placement Prediction & Job Readiness
+            </h2>
+
+            <p class="prediction-subtitle">
+                ML-based placement likelihood combined with your assessment readiness.
+            </p>
+
+
+            <div class="prediction-grid">
+
+                <div class="prediction-card">
+
+                    <div
+                        class="prediction-value"
+                        id="placementProbability"
+                    >
+                        --
+                    </div>
+
+                    <div class="prediction-label">
+                        Placement Probability
+                    </div>
+
+                </div>
+
+
+                <div class="prediction-card">
+
+                    <div
+                        class="prediction-value"
+                        id="jobReadinessScore"
+                    >
+                        --
+                    </div>
+
+                    <div class="prediction-label">
+                        Job Readiness Score
+                    </div>
+
+                </div>
+
+
+                <div class="prediction-card">
+
+                    <div
+                        class="prediction-value"
+                        id="resultCodingScore"
+                    >
+                        --
+                    </div>
+
+                    <div class="prediction-label">
+                        Coding Test Score
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="prediction-status"
+                id="placementPredictionStatus"
+            >
+                Placement prediction will appear after completing the coding test.
+            </div>
+
+
+            <div class="prediction-note">
+                Placement probability is an ML estimate based on the
+                currently available profile and assessment features.
+                It is not a guarantee of employment.
+            </div>
+
+        </section>
+
+
+
+        <!-- CODING TEST -->
+        <section class="prediction-section" id="codingTestSection">
+            <h2>💻 Coding Test</h2>
+            <p class="prediction-subtitle">
+                Solve a randomized programming problem using Java, Python, C, C++ or JavaScript.
+                Your code will be evaluated against hidden test cases.
+            </p>
+            <div class="prediction-grid">
+                <div class="prediction-card">
+                    <div class="prediction-value" id="codingTestSectionScore">--</div>
+                    <div class="prediction-label">Current Coding Score</div>
+                </div>
+                <div class="prediction-card">
+                    <div class="prediction-value" id="codingTestStatus">Pending</div>
+                    <div class="prediction-label">Coding Test Status</div>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:20px;">
+                <a id="codingTestButton" href="#" class="action-btn primary-btn"
+                   style="display:inline-block;text-decoration:none;">
+                    💻 Start Coding Test →
+                </a>
+            </div>
+            <div class="prediction-note" id="codingTestNote">
+                Complete the coding test to update your coding score and job-readiness result.
+            </div>
+        </section>
+
+        <!-- AI-SIMULATED TECHNICAL INTERVIEW -->
+        <section class="prediction-section" id="technicalInterviewSection">
+            <h2>🤖 AI-Simulated Technical Interview</h2>
+            <p class="prediction-subtitle">
+                Practice a randomized, role-specific technical interview after completing your coding test.
+            </p>
+            <div style="text-align:center;margin-top:20px;">
+                <a id="technicalInterviewButton" href="#" class="action-btn primary-btn"
+                   style="display:inline-block;text-decoration:none;">
+                    🤖 Start Technical Interview →
+                </a>
+            </div>
+            <div class="prediction-note">
+                This is an automated simulation and is not equivalent to a human interview.
+            </div>
+        </section>
+
+        <!-- COMPANY ELIGIBILITY - AFTER INTERVIEW -->
+        <section class="prediction-section" id="companyEligibilitySection">
+            <h2>🏢 Company Eligibility</h2>
+            <p class="prediction-subtitle">
+                Eligibility is checked using academic criteria plus your Assessment, Coding Test and AI-Simulated Technical Interview performance configured by the administrator.
+            </p>
+            <div id="companyEligibility" class="company-grid">
+                <div class="analysis-muted">Checking company criteria and performance requirements...</div>
+            </div>
+            <div class="prediction-note">
+                A company is marked eligible only when all configured criteria are satisfied. Your ML placement probability remains a separate prediction.
+            </div>
+        </section>
+
+        <!-- RECOMMENDATION -->
+
+        <section class="recommendation">
+
+            <h2>
+                📊 Performance Insight
+            </h2>
+
+            <p id="recommendationText">
+                Your performance analysis will appear here.
+            </p>
+
+        </section>
+
+
+        <!-- CAREER ANALYSIS -->
+        <section class="analysis-grid">
+
+            <div class="analysis-card">
+                <div class="analysis-icon">💪</div>
+                <h2>Strengths</h2>
+                <div id="strengthsList" class="analysis-list">
+                    <div class="analysis-muted">Analyzing your performance...</div>
+                </div>
+            </div>
+
+            <div class="analysis-card">
+                <div class="analysis-icon">⚠️</div>
+                <h2>Skill Gaps</h2>
+                <div id="weaknessesList" class="analysis-list">
+                    <div class="analysis-muted">Analyzing your performance...</div>
+                </div>
+            </div>
+
+            <div class="analysis-card analysis-wide">
+                <div class="analysis-icon">📚</div>
+                <h2>Personalized Recommendations</h2>
+                <div id="recommendationsList" class="analysis-list">
+                    <div class="analysis-muted">Generating recommendations...</div>
+                </div>
+            </div>
+
+
+            </div>
+
+        </section>
+
+        <!-- QUESTION REVIEW - COLLAPSED BY DEFAULT -->
+        <section class="review-card" id="questionReviewSection">
+            <h2>Question Review</h2>
+            <p class="analysis-note">
+                Review your questions, answers, correct answers and explanations only when you need them.
+            </p>
+            <div class="solutions-toggle">
+                <button type="button" id="solutionsButton" class="solutions-btn" onclick="toggleSolutions()">
+                    📖 Show Solutions
+                </button>
+            </div>
+            <div id="reviewList" class="review-list" style="display:none;">
+                <!-- Filled by JavaScript after Show Solutions is clicked -->
+            </div>
+        </section>
+
+        <!-- ACTIONS -->
+
+        <div class="actions">
+
+            <a href="profile.html"
+               class="action-btn secondary-btn">
+                ← Back to Profile
+            </a>
+
+            <a href="assessment.html"
+               class="action-btn primary-btn">
+                Take Assessment Again
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    const API_BASE = "http://127.0.0.1:5000";
+
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const assessmentId =
+        params.get("assessment_id");
+
+    // Coding Test and Technical Interview navigation
+    const codingButton = document.getElementById("codingTestButton");
+    const interviewButton = document.getElementById("technicalInterviewButton");
+
+    if (assessmentId) {
+        if (codingButton) {
+            codingButton.href =
+                `coding-test.html?assessment_id=${encodeURIComponent(assessmentId)}`;
+        }
+        if (interviewButton) {
+            interviewButton.href =
+                `technical-interview.html?assessment_id=${encodeURIComponent(assessmentId)}`;
+        }
+    }
+
+
+
+    const loading =
+        document.getElementById("loading");
+
+    const errorBox =
+        document.getElementById("error");
+
+    const errorMessage =
+        document.getElementById("errorMessage");
+
+    const resultContent =
+        document.getElementById("resultContent");
+
+
+
+    let solutionsVisible = false;
+
+    function toggleSolutions() {
+        solutionsVisible = !solutionsVisible;
+
+        const reviewList = document.getElementById("reviewList");
+
+        if (reviewList) {
+            reviewList.style.display = solutionsVisible ? "flex" : "none";
+        }
+
+        // Once the review is opened, show the complete solution details.
+        document.querySelectorAll(
+            ".solution-explanation, .solution-answer"
+        ).forEach(function (element) {
+            element.style.display = solutionsVisible ? "block" : "none";
+        });
+
+        const button =
+            document.getElementById("solutionsButton");
+
+        if (button) {
+            button.textContent =
+                solutionsVisible
+                    ? "🙈 Hide Solutions"
+                    : "📖 Show Solutions";
+        }
+    }
+
+
+    async function loadResult() {
+
+        if (!assessmentId) {
+
+            showError(
+                "Assessment ID is missing from the URL."
+            );
+
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/assessment/${assessmentId}/result`
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to load assessment result."
+                );
+            }
+
+
+            displayResult(data);
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Result loading error:",
+                error
+            );
+
+            showError(
+                error.message
+            );
+        }
+    }
+
+
+    function showError(message) {
+
+        loading.style.display = "none";
+
+        resultContent.style.display = "none";
+
+        errorBox.style.display = "block";
+
+        errorMessage.textContent =
+            message;
+    }
+
+
+    function displayResult(data) {
+
+        loading.style.display = "none";
+
+        errorBox.style.display = "none";
+
+        resultContent.style.display = "block";
+
+
+        /*
+         * Overall score
+         */
+
+        const assessment = data.assessment || {};
+
+        const score =
+            Number(
+                assessment.score ??
+                data.score ??
+                data.percentage ??
+                0
+            );
+
+
+        document.getElementById(
+            "overallScore"
+        ).textContent =
+            `${Math.round(score)}%`;
+
+
+        document.getElementById(
+            "scoreText"
+        ).textContent =
+            getScoreMessage(score);
+
+
+        /*
+        * Statistics
+        */
+
+        document.getElementById(
+    "correctCount"
+).textContent =
+            assessment.correct_answers ?? 0;
+
+
+        document.getElementById(
+            "wrongCount"
+        ).textContent =
+            assessment.wrong_answers ?? 0;
+
+
+        document.getElementById(
+            "skippedCount"
+        ).textContent =
+            assessment.skipped_questions ?? 0;
+
+
+        document.getElementById(
+            "answeredCount"
+        ).textContent =
+            assessment.answered_questions ?? 0;
+
+
+        /*
+         * Section scores
+         */
+
+        displaySectionScores(
+            data.section_scores ||
+            data.sectionScores ||
+            {}
+        );
+
+
+        /*
+         * Placement prediction + job readiness
+         */
+
+        const placementProbability =
+            Number(
+                data.placement_probability ?? 0
+            );
+
+        const readinessScore =
+            Number(
+                data.readiness_score ?? 0
+            );
+
+        const sectionScores =
+            data.section_scores || {};
+
+        const codingTestScore =
+            Number(
+                sectionScores["Coding Test"] ?? 0
+            );
+
+        const codingSectionScore =
+            document.getElementById("codingTestSectionScore");
+        const codingStatus =
+            document.getElementById("codingTestStatus");
+        const codingNote =
+            document.getElementById("codingTestNote");
+
+        if (codingSectionScore) {
+            codingSectionScore.textContent = `${Math.round(codingTestScore)}%`;
+        }
+        if (codingStatus) {
+            codingStatus.textContent =
+                codingTestScore > 0 ? "Completed" : "Pending";
+        }
+        if (codingNote && codingTestScore > 0) {
+            codingNote.textContent =
+                "Coding test completed. Continue to the AI-simulated technical interview.";
+        }
+
+
+        document.getElementById(
+            "placementProbability"
+        ).textContent =
+            `${Math.round(placementProbability)}%`;
+
+        document.getElementById(
+            "jobReadinessScore"
+        ).textContent =
+            `${Math.round(readinessScore)}%`;
+
+        document.getElementById(
+            "resultCodingScore"
+        ).textContent =
+            `${Math.round(codingTestScore)}%`;
+
+        const placementStatus =
+            document.getElementById(
+                "placementPredictionStatus"
+            );
+
+        if (
+            data.placement_probability !== null &&
+            data.placement_probability !== undefined
+        ) {
+
+            placementStatus.textContent =
+                data.prediction ||
+                data.placement_prediction ||
+                (
+                    placementProbability >= 50
+                        ? "Likely to be Placed"
+                        : "Placement Risk"
+                );
+
+        }
+        else {
+
+            placementStatus.textContent =
+                "Complete the coding test to generate your final placement prediction.";
+
+        }
+
+
+        /*
+         * Question review
+         */
+
+        displayQuestionReview(
+            data.questions ||
+            data.question_review ||
+            data.review ||
+            []
+        );
+
+
+        /*
+         * Recommendation
+         */
+
+        generateRecommendation(
+            score,
+            data
+        );
+
+        renderCareerAnalysis(data);
+    }
+
+
+    function getScoreMessage(score) {
+
+        if (score >= 85) {
+            return "Excellent performance — you are showing strong placement readiness.";
+        }
+
+        if (score >= 70) {
+            return "Good performance — you have a solid foundation with some areas to improve.";
+        }
+
+        if (score >= 50) {
+            return "Moderate performance — strengthening your weak areas will improve your placement readiness.";
+        }
+
+        return "Your current performance indicates that you should focus on building your fundamentals.";
+    }
+
+
+    function displaySectionScores(sectionScores) {
+
+        const container =
+            document.getElementById(
+                "sectionScores"
+            );
+
+
+        container.innerHTML = "";
+
+
+        const entries =
+            Object.entries(sectionScores);
+
+
+        if (entries.length === 0) {
+
+            container.innerHTML =
+                `<p style="color:#8295b5;">
+                    Section scores are not available.
+                </p>`;
+
+            return;
+        }
+
+
+        entries.forEach(
+            ([section, value]) => {
+
+                let score = 0;
+
+
+                /*
+                 * Supports both:
+                 *
+                 * "Technical": 75
+                 *
+                 * and
+                 *
+                 * "Technical": {
+                 *     score: 75
+                 * }
+                 */
+
+                if (
+                    typeof value ===
+                    "object" &&
+                    value !== null
+                ) {
+
+                    score =
+                        Number(
+                            value.score ??
+                            value.percentage ??
+                            0
+                        );
+
+                } else {
+
+                    score =
+                        Number(value);
+                }
+
+
+                score =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            score
+                        )
+                    );
+
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+                row.className =
+                    "section-row";
+
+
+                row.innerHTML = `
+
+                    <div class="section-header">
+
+                        <span class="section-name">
+                            ${escapeHtml(section)}
+                        </span>
+
+                        <span class="section-score">
+                            ${Math.round(score)}%
+                        </span>
+
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            style="width:${score}%">
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(row);
+            }
+        );
+    }
+
+
+    function displayQuestionReview(questions) {
+
+        const container =
+            document.getElementById(
+                "reviewList"
+            );
+
+
+        container.innerHTML = "";
+
+
+        if (!questions.length) {
+
+            container.innerHTML =
+                `<p style="color:#8295b5;">
+                    Question review is not available.
+                </p>`;
+
+            return;
+        }
+
+
+        questions.forEach(
+            (question, index) => {
+
+                const status =
+                    String(
+                        question.status ||
+                        ""
+                    ).toLowerCase();
+
+
+                let statusClass =
+                    "skipped";
+
+
+                let statusText =
+                    "Skipped";
+
+
+                if (
+                    status === "correct"
+                ) {
+
+                    statusClass =
+                        "correct";
+
+                    statusText =
+                        "Correct";
+
+                }
+
+                else if (
+                    status === "wrong"
+                ) {
+
+                    statusClass =
+                        "wrong";
+
+                    statusText =
+                        "Wrong";
+                }
+
+
+                const questionText =
+                    question.question ||
+                    question.question_text ||
+                    "Question text unavailable";
+
+
+                const selectedAnswer =
+                    question.selected_answer ??
+                    question.selectedAnswer ??
+                    "Not answered";
+
+
+                const correctAnswer =
+                    question.correct_answer ??
+                    question.correctAnswer ??
+                    "Not available";
+
+
+                const explanation =
+                    question.explanation ||
+                    "No explanation available.";
+
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "question-review";
+
+
+                card.innerHTML = `
+
+                    <div class="question-top">
+
+                        <span class="question-number">
+                            Question ${index + 1}
+                        </span>
+
+                        <span class="status ${statusClass}">
+                            ${statusText}
+                        </span>
+
+                    </div>
+
+
+                    <div class="question-text">
+                        ${escapeHtml(questionText)}
+                    </div>
+
+
+                    <div class="answer-box">
+
+                        <div class="answer-item">
+
+                            <div class="answer-label">
+                                YOUR ANSWER
+                            </div>
+
+                            <div class="answer-value">
+                                ${escapeHtml(
+                                    String(selectedAnswer)
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="answer-item">
+
+                            <div class="answer-label">
+                                CORRECT ANSWER
+                            </div>
+
+                            <div class="answer-value">
+                                ${escapeHtml(
+                                    String(correctAnswer)
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="explanation solution-explanation">
+
+                        <strong>
+                            Explanation:
+                        </strong>
+
+                        ${escapeHtml(
+                            String(explanation)
+                        )}
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(card);
+            }
+        );
+    }
+
+
+    function generateRecommendation(
+        score,
+        data
+    ) {
+
+        const element =
+            document.getElementById(
+                "recommendationText"
+            );
+
+
+        const assessment =
+            data.assessment || {};
+
+        const skipped =
+            Number(
+                assessment.skipped_questions ??
+                data.skipped ??
+                0
+            );
+
+
+        const wrong =
+            Number(
+                assessment.wrong_answers ??
+                data.wrong ??
+                0
+            );
+
+
+        let message = "";
+
+
+        if (score >= 85) {
+
+            message =
+                "Your assessment performance is strong. Continue practicing coding, technical interviews, aptitude and communication to maintain your placement readiness.";
+
+        }
+
+        else if (score >= 70) {
+
+            message =
+                "You have a good foundation. Focus on the topics where you made mistakes and continue practicing role-specific technical and coding questions.";
+
+        }
+
+        else if (score >= 50) {
+
+            message =
+                "Your performance is developing. Strengthen your fundamentals, practice aptitude and logical reasoning regularly, and revise technical concepts.";
+
+        }
+
+        else {
+
+            message =
+                "Focus first on strengthening your fundamentals. Regular practice in technical concepts, aptitude, logical reasoning, communication and coding will help improve your readiness.";
+
+        }
+
+
+        if (wrong > 0) {
+
+            message +=
+                ` You currently have ${wrong} incorrect response${wrong === 1 ? "" : "s"} to review.`;
+        }
+
+
+        if (skipped > 0) {
+
+            message +=
+                ` You also skipped ${skipped} question${skipped === 1 ? "" : "s"}; reviewing these topics can help identify knowledge gaps.`;
+        }
+
+
+        element.textContent =
+            message;
+    }
+
+
+    function escapeHtml(value) {
+
+        value = String(value ?? "");
+
+        return value
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    async function renderCareerAnalysis(data) {
+        let analysis = data;
+
+        try {
+            const response = await fetch(
+                `${API_BASE}/api/career-analysis/${assessmentId}`
+            );
+
+            if (response.ok) {
+                const backendAnalysis = await response.json();
+                analysis = { ...data, ...backendAnalysis };
+            }
+        } catch (error) {
+            console.warn("Career analysis API unavailable; using result data.", error);
+        }
+
+        const sectionScores = analysis.section_scores || {};
+
+        const scoreEntries = Object.entries(sectionScores)
+            .map(([name, value]) => {
+                const score = typeof value === "object" && value !== null
+                    ? Number(value.score ?? value.percentage ?? 0)
+                    : Number(value);
+
+                return {
+                    name,
+                    score: Math.max(0, Math.min(100, score))
+                };
+            })
+            .sort((a, b) => b.score - a.score);
+
+        const strengths = analysis.strengths?.length
+            ? analysis.strengths
+            : scoreEntries.filter(item => item.score >= 70).slice(0, 3);
+
+        const gaps = analysis.weaknesses?.length
+            ? analysis.weaknesses
+            : scoreEntries
+                .filter(item => item.score < 70)
+                .sort((a, b) => a.score - b.score)
+                .slice(0, 4);
+
+        const strengthBox =
+            document.getElementById("strengthsList");
+
+        const weaknessBox =
+            document.getElementById("weaknessesList");
+
+        const recommendationBox =
+            document.getElementById("recommendationsList");
+
+        strengthBox.innerHTML = strengths.length
+            ? strengths.map(item => {
+                const name = typeof item === "string" ? item : (item.section ?? item.name ?? "Section");
+                const score = Number(typeof item === "string" ? 0 : (item.score ?? 0));
+
+                return `
+                    <div class="analysis-item">
+                        ✓ <strong>${escapeHtml(name)}</strong>
+                        — ${Math.round(score)}% performance.
+                    </div>
+                `;
+            }).join("")
+            : `<div class="analysis-item">
+                No section is currently above 70%. Focus on the fundamentals first.
+              </div>`;
+
+        weaknessBox.innerHTML = gaps.length
+            ? gaps.map(item => {
+                const name = typeof item === "string" ? item : (item.section ?? item.name ?? "Section");
+                const score = Number(typeof item === "string" ? 0 : (item.score ?? 0));
+
+                return `
+                    <div class="analysis-item">
+                        ⚠ <strong>${escapeHtml(name)}</strong>
+                        — ${Math.round(score)}%.
+                        This is a priority improvement area.
+                    </div>
+                `;
+            }).join("")
+            : `<div class="analysis-item">
+                No major section-level gap detected.
+                Continue role-specific practice.
+              </div>`;
+
+        const recommendations =
+            Array.isArray(analysis.recommendations)
+                ? analysis.recommendations
+                : [];
+
+        recommendationBox.innerHTML = recommendations.length
+            ? recommendations.slice(0, 5).map(item =>
+                `<div class="analysis-item">
+                    → ${escapeHtml(String(item))}
+                 </div>`
+              ).join("")
+            : `<div class="analysis-item">
+                Keep practicing role-specific technical, aptitude,
+                communication and coding skills.
+              </div>`;
+
+        renderCompanyEligibility(analysis);
+    }
+
+
+    function renderCompanyEligibility(data) {
+        const container = document.getElementById("companyEligibility");
+        const companies = data.company_eligibility || [];
+
+        if (!companies.length) {
+            container.innerHTML =
+                `<div class="analysis-muted">No active company criteria have been configured by the administrator yet.</div>`;
+            return;
+        }
+
+        container.innerHTML = companies.map(company => {
+            const eligible = Boolean(company.eligible);
+            const reasons = Array.isArray(company.reasons) ? company.reasons : [];
+
+            const checks = Array.isArray(company.checks) ? company.checks : [];
+            const checkHtml = checks.map(check => `
+                <div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid rgba(130,149,181,.12);font-size:13px;">
+                    <span>${escapeHtml(String(check.criterion || "Criterion"))}</span>
+                    <span style="font-weight:700;">${check.passed ? "✓ Met" : "✗ Not Met"}</span>
+                </div>
+            `).join("");
+
+            return `
+                <div class="company-card">
+                    <div class="company-name">${escapeHtml(company.company_name || "Company")}</div>
+                    <span class="company-status ${eligible ? "eligible" : "not-eligible"}">
+                        ${eligible ? "✓ Eligible" : "✗ Not Eligible"}
+                    </span>
+                    <div style="margin-top:14px;">
+                        ${checkHtml}
+                    </div>
+                    <div class="company-reason">
+                        ${eligible
+                            ? "You satisfy all configured academic and performance criteria."
+                            : escapeHtml(reasons.join(" ") || "One or more configured criteria are not satisfied.")}
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    /*
+     * Start loading the result
+     */
+
+    loadResult();
+
+</script>
+
+</body>
+</html>

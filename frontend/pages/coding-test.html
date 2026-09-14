@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Coding Test | Student Placement Prediction System
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(0, 180, 255, 0.12),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    rgba(130, 70, 255, 0.12),
+                    transparent 30%
+                ),
+                #050914;
+
+            color: #e8f1ff;
+
+            min-height: 100vh;
+        }
+
+
+        .header {
+            height: 76px;
+
+            background:
+                rgba(5, 10, 22, 0.95);
+
+            border-bottom:
+                1px solid rgba(80, 170, 255, 0.15);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 40px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 10;
+        }
+
+
+        .brand {
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .brand img {
+            width: 48px;
+
+            height: 48px;
+
+            object-fit: contain;
+        }
+
+
+        .brand-text {
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+
+        .brand-subtitle {
+            font-size: 11px;
+
+            color: #6ea8ff;
+
+            margin-top: 3px;
+
+            letter-spacing: 1px;
+        }
+
+
+        .back-btn {
+            text-decoration: none;
+
+            color: #dcecff;
+
+            border:
+                1px solid rgba(100, 180, 255, 0.3);
+
+            padding: 10px 18px;
+
+            border-radius: 9px;
+
+            background:
+                rgba(20, 50, 90, 0.35);
+        }
+
+
+        .container {
+            width: min(1250px, 94%);
+
+            margin: 35px auto 70px;
+        }
+
+
+        .page-title {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+
+        .page-title h1 {
+            font-size: 32px;
+
+            margin-bottom: 8px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #65d9ff,
+                    #8f7cff
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .page-title p {
+            color: #8295b5;
+
+            font-size: 14px;
+        }
+
+
+        .test-layout {
+            display: grid;
+
+            grid-template-columns: 260px 1fr;
+
+            gap: 20px;
+        }
+
+
+        .panel {
+            background:
+                rgba(10, 20, 38, 0.88);
+
+            border:
+                1px solid rgba(100, 160, 230, 0.15);
+
+            border-radius: 17px;
+
+            padding: 22px;
+        }
+
+
+        .panel h2 {
+            font-size: 17px;
+
+            margin-bottom: 18px;
+
+            color: #dcecff;
+        }
+
+
+        .language-btn {
+            width: 100%;
+
+            padding: 13px 15px;
+
+            margin-bottom: 10px;
+
+            border-radius: 9px;
+
+            border:
+                1px solid rgba(100, 160, 230, 0.18);
+
+            background:
+                rgba(255, 255, 255, 0.035);
+
+            color: #b9c9e4;
+
+            cursor: pointer;
+
+            text-align: left;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .language-btn:hover {
+            background:
+                rgba(50, 100, 160, 0.25);
+
+            border-color:
+                rgba(100, 180, 255, 0.4);
+        }
+
+
+        .language-btn.active {
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(22, 127, 193, 0.35),
+                    rgba(102, 75, 192, 0.35)
+                );
+
+            border-color:
+                rgba(100, 190, 255, 0.55);
+
+            color: white;
+        }
+
+
+        .info-box {
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(80, 140, 255, 0.06);
+
+            border:
+                1px solid rgba(100, 160, 230, 0.12);
+
+            color: #8fa4c5;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+
+        .problem-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .problem-title {
+            font-size: 20px;
+
+            color: #e8f1ff;
+        }
+
+
+        .difficulty {
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            background:
+                rgba(69, 229, 154, 0.08);
+
+            border:
+                1px solid rgba(69, 229, 154, 0.2);
+
+            color: #45e59a;
+        }
+
+
+        .problem-description {
+            color: #9db0cf;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .example {
+            background:
+                rgba(3, 10, 23, 0.8);
+
+            border:
+                1px solid rgba(100, 160, 230, 0.12);
+
+            border-radius: 10px;
+
+            padding: 15px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .example-title {
+            color: #76cfff;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+
+        pre {
+            white-space: pre-wrap;
+
+            color: #cbd9ef;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        .editor-label {
+            display: flex;
+
+            justify-content: space-between;
+
+            color: #8295b5;
+
+            font-size: 12px;
+
+            margin-bottom: 8px;
+        }
+
+
+        textarea {
+            width: 100%;
+
+            min-height: 330px;
+
+            resize: vertical;
+
+            border-radius: 11px;
+
+            border:
+                1px solid rgba(100, 160, 230, 0.2);
+
+            background:
+                #030815;
+
+            color: #dcecff;
+
+            padding: 16px;
+
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            outline: none;
+        }
+
+
+        textarea:focus {
+            border-color:
+                rgba(100, 190, 255, 0.55);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(70, 160, 255, 0.06);
+        }
+
+
+        .actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 12px;
+
+            margin-top: 15px;
+        }
+
+
+        button {
+            font-family: inherit;
+        }
+
+
+        .run-btn {
+            border: none;
+
+            cursor: pointer;
+
+            padding: 12px 22px;
+
+            border-radius: 9px;
+
+            color: white;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #167fc1,
+                    #664bc0
+                );
+        }
+
+
+        .run-btn:disabled {
+            opacity: 0.6;
+
+            cursor: not-allowed;
+        }
+
+
+        .submit-btn {
+            background: linear-gradient(90deg, #168a62, #1478a8);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+
+        .result-panel {
+            margin-top: 20px;
+
+            display: none;
+        }
+
+
+        .result-summary {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .result-box {
+            padding: 15px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(255, 255, 255, 0.035);
+
+            text-align: center;
+        }
+
+
+        .result-number {
+            font-size: 25px;
+
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+
+        .result-label {
+            font-size: 11px;
+
+            color: #8295b5;
+        }
+
+
+        .test-result {
+            padding: 12px 14px;
+
+            border-radius: 9px;
+
+            margin-top: 8px;
+
+            font-size: 13px;
+        }
+
+
+        .test-pass {
+            background:
+                rgba(69, 229, 154, 0.08);
+
+            border:
+                1px solid rgba(69, 229, 154, 0.2);
+
+            color: #45e59a;
+        }
+
+
+        .test-fail {
+            background:
+                rgba(255, 101, 119, 0.08);
+
+            border:
+                1px solid rgba(255, 101, 119, 0.2);
+
+            color: #ff9aa8;
+        }
+
+
+        .status-message {
+            margin-top: 12px;
+
+            color: #8fa4c5;
+
+            font-size: 13px;
+        }
+
+
+
+        /* ============================================================
+           FINAL ASSESSMENT SUMMARY
+           ============================================================ */
+
+        .final-summary {
+            margin-top: 25px;
+            display: none;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 24, 48, 0.96),
+                rgba(24, 18, 54, 0.96)
+            );
+            border: 1px solid rgba(100, 190, 255, 0.25);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+        }
+
+        .final-summary-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .final-summary-header h2 {
+            font-size: 24px;
+            margin-bottom: 7px;
+            background: linear-gradient(90deg, #65d9ff, #8f7cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .final-summary-header p {
+            color: #8295b5;
+            font-size: 13px;
+        }
+
+        .final-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .final-score-card {
+            padding: 22px 15px;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(100, 160, 230, 0.12);
+            text-align: center;
+        }
+
+        .final-score-value {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 7px;
+            color: #e8f1ff;
+        }
+
+        .final-score-label {
+            font-size: 12px;
+            color: #8295b5;
+        }
+
+        .readiness-level {
+            margin-top: 20px;
+            padding: 13px;
+            text-align: center;
+            border-radius: 10px;
+            background: rgba(69, 229, 154, 0.07);
+            border: 1px solid rgba(69, 229, 154, 0.18);
+            color: #45e59a;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .final-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+
+        .final-action-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 11px 20px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .final-action-primary {
+            color: white;
+            background: linear-gradient(90deg, #167fc1, #664bc0);
+        }
+
+        .final-action-secondary {
+            color: #dcecff;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            background: rgba(20, 50, 90, 0.35);
+        }
+
+        @media (max-width: 850px) {
+
+            .test-layout {
+                grid-template-columns: 1fr;
+            }
+
+
+            .header {
+                padding: 0 18px;
+            }
+
+
+            .brand-text {
+                font-size: 14px;
+            }
+
+
+            .result-summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="brand">
+
+        <img
+            src="../../assets/careerpredict-logo.png"
+            alt="Student Placement Prediction System"
+        >
+
+        <div>
+
+            <div class="brand-text">
+                Student Placement Predictor
+            </div>
+
+            <div class="brand-subtitle">
+                MACHINE LEARNING SYSTEM
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <a
+        href="profile.html"
+        class="back-btn"
+    >
+        ← Dashboard
+    </a>
+
+</header>
+
+
+
+<main class="container">
+
+
+    <div class="page-title">
+
+        <h1>
+            Coding Test
+        </h1>
+
+        <p>
+            Student Placement Prediction System using Machine Learning
+        </p>
+
+    </div>
+
+
+
+    <div class="test-layout">
+
+
+        <!-- LANGUAGE PANEL -->
+
+        <aside class="panel">
+
+            <h2>
+                Select Language
+            </h2>
+
+
+            <button
+                class="language-btn active"
+                data-language="python"
+                onclick="selectLanguage('python', this)"
+            >
+                🐍 Python
+            </button>
+
+
+            <button
+                class="language-btn"
+                data-language="java"
+                onclick="selectLanguage('java', this)"
+            >
+                ☕ Java
+            </button>
+
+
+            <button
+                class="language-btn"
+                data-language="c"
+                onclick="selectLanguage('c', this)"
+            >
+                C
+            </button>
+
+
+            <button
+                class="language-btn"
+                data-language="c++"
+                onclick="selectLanguage('c++', this)"
+            >
+                C++
+            </button>
+
+
+            <button
+                class="language-btn"
+                data-language="javascript"
+                onclick="selectLanguage('javascript', this)"
+            >
+                JavaScript
+            </button>
+
+
+            <div class="info-box">
+
+                <strong>
+                    Coding Test
+                </strong>
+
+                <br><br>
+
+                Write a program that finds the
+                <strong>largest number</strong>
+                in a list of integers.
+
+                <br><br>
+
+                Your program will be evaluated
+                using multiple hidden test cases.
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- CODING AREA -->
+
+        <section>
+
+            <div class="panel">
+
+                <div class="problem-header">
+                    <div>
+                        <div class="problem-title" id="problemTitle">Loading coding challenge...</div>
+                        <div style="margin-top:7px;color:#7187a8;font-size:12px;" id="problemMeta">Please wait...</div>
+                    </div>
+                    <div class="difficulty" id="difficultyBadge">-</div>
+                </div>
+
+                <div class="problem-description" id="problemDescription">
+                    Loading your randomized coding question...
+                </div>
+
+                <div class="example">
+                    <div class="example-title">EXAMPLE</div>
+                    <pre id="sampleExample">Loading...</pre>
+                </div>
+
+                <div class="editor-label">
+                    <span>Code Editor</span>
+                    <span id="languageLabel">Python</span>
+                </div>
+
+                <textarea
+                    id="codeEditor"
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                ></textarea>
+
+                <div class="actions">
+                    <button class="run-btn" id="runButton" onclick="runCode()">
+                        ▶ Run Sample
+                    </button>
+                    <button class="run-btn submit-btn" id="submitButton" onclick="submitSolution()">
+                        ✓ Submit Solution
+                    </button>
+                </div>
+
+                <div class="status-message" id="statusMessage"></div>
+
+            </div>
+
+            <!-- RESULTS -->
+
+            <div
+                class="panel result-panel"
+                id="resultPanel"
+            >
+
+                <h2>
+                    Test Results
+                </h2>
+
+                <div id="resultNote" style="color:#7187a8;font-size:12px;margin:8px 0 16px;">
+                    Public sample results will appear here.
+                </div>
+
+
+
+                <div class="result-summary">
+
+
+                    <div class="result-box">
+
+                        <div
+                            class="result-number"
+                            id="passedCount"
+                        >
+                            0
+                        </div>
+
+                        <div class="result-label">
+                            Tests Passed
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="result-box">
+
+                        <div
+                            class="result-number"
+                            id="totalCount"
+                        >
+                            0
+                        </div>
+
+                        <div class="result-label">
+                            Total Tests
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="result-box">
+
+                        <div
+                            class="result-number"
+                            id="codingScore"
+                        >
+                            0%
+                        </div>
+
+                        <div class="result-label">
+                            Coding Score
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <div id="testResults"></div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- ============================================================
+         FINAL ASSESSMENT SUMMARY
+         ============================================================ -->
+
+    <section
+        class="final-summary"
+        id="finalSummary"
+    >
+
+        <div class="final-summary-header">
+
+            <h2>🎯 Final Assessment Summary</h2>
+
+            <p>
+                Your coding performance and updated job readiness result
+            </p>
+
+        </div>
+
+
+        <div class="final-summary-grid">
+
+            <div class="final-score-card">
+
+                <div
+                    class="final-score-value"
+                    id="finalCodingScore"
+                >
+                    0%
+                </div>
+
+                <div class="final-score-label">
+                    Coding Test Score
+                </div>
+
+            </div>
+
+
+            <div class="final-score-card">
+
+                <div
+                    class="final-score-value"
+                    id="finalReadinessScore"
+                >
+                    0%
+                </div>
+
+                <div class="final-score-label">
+                    Job Readiness Score
+                </div>
+
+            </div>
+
+
+            <div class="final-score-card">
+
+                <div
+                    class="final-score-value"
+                    id="finalAssessmentId"
+                >
+                    -
+                </div>
+
+                <div class="final-score-label">
+                    Assessment ID
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="readiness-level"
+            id="readinessLevel"
+        >
+            Job Readiness Level: -
+        </div>
+
+
+        <div class="final-actions">
+
+            <a
+                id="viewAssessmentResult"
+                href="#"
+                class="final-action-btn final-action-primary"
+            >
+                📊 View Complete Assessment Result
+            </a>
+
+            <a
+                href="profile.html"
+                class="final-action-btn final-action-secondary"
+            >
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+
+    // ============================================================
+    // API CONFIGURATION
+    // ============================================================
+
+    const API_BASE =
+        "http://127.0.0.1:5000";
+
+
+    // ============================================================
+    // CURRENT ASSESSMENT
+    // ============================================================
+
+    const urlParams = new URLSearchParams(
+        window.location.search
+    );
+
+    const assessmentId =
+        urlParams.get("assessment_id");
+
+
+    // ============================================================
+    // RANDOM CODING TEST
+    // ============================================================
+
+    let selectedLanguage = "python";
+    let codingQuestion = null;
+    let codingSubmitted = false;
+
+    const starterCode = {
+        python: `# Write your solution here\n`,
+        java: `import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // Write your solution here\n    }\n}\n`,
+        c: `#include <stdio.h>\n\nint main() {\n    // Write your solution here\n    return 0;\n}\n`,
+        "c++": `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}\n`,
+        javascript: `const fs = require("fs");\nconst input = fs.readFileSync(0, "utf8").trim();\n\n// Write your solution here\n`
+    };
+
+    function languageLabel(language) {
+        if (language === "c++") return "C++";
+        if (language === "javascript") return "JavaScript";
+        return language.charAt(0).toUpperCase() + language.slice(1);
+    }
+
+    function setEditorStarter() {
+        document.getElementById("codeEditor").value = starterCode[selectedLanguage];
+    }
+
+    function selectLanguage(language, button) {
+        if (codingSubmitted) return;
+        selectedLanguage = language;
+        document.querySelectorAll(".language-btn").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById("languageLabel").textContent = languageLabel(language);
+        setEditorStarter();
+        document.getElementById("resultPanel").style.display = "none";
+        document.getElementById("statusMessage").textContent = "";
+    }
+
+    async function loadCodingQuestion() {
+        const status = document.getElementById("statusMessage");
+        if (!assessmentId) {
+            status.textContent = "No assessment ID was provided.";
+            return;
+        }
+        try {
+            const user = JSON.parse(sessionStorage.getItem("careerpredict_user") || "null");
+            if (!user || !user.id) {
+                status.textContent = "Please log in again before starting the coding test.";
+                return;
+            }
+
+            const response = await fetch(`${API_BASE}/api/coding/question?assessment_id=${Number(assessmentId)}&user_id=${Number(user.id)}`);
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || data.error || "Unable to load coding question.");
+
+            codingQuestion = data.question;
+            codingSubmitted = Boolean(data.submitted);
+
+            document.getElementById("problemTitle").textContent = codingQuestion.title;
+            document.getElementById("problemMeta").textContent = `Topic: ${codingQuestion.topic} • Randomized for this assessment`;
+            document.getElementById("difficultyBadge").textContent = codingQuestion.difficulty;
+            document.getElementById("problemDescription").innerHTML =
+                `${escapeHtml(codingQuestion.description)}<br><br><strong>Input:</strong> ${escapeHtml(codingQuestion.input_format)}<br><br><strong>Output:</strong> ${escapeHtml(codingQuestion.output_format)}`;
+            document.getElementById("sampleExample").textContent =
+                `Input:\n${codingQuestion.sample_input}\nOutput:\n${codingQuestion.sample_output}`;
+
+            setEditorStarter();
+            if (codingSubmitted) {
+                document.getElementById("codeEditor").disabled = true;
+                document.getElementById("runButton").disabled = true;
+                document.getElementById("submitButton").disabled = true;
+                status.textContent = `This coding test was already submitted. Score: ${Number(data.score).toFixed(2)}%.`;
+            } else {
+                status.textContent = "A fresh coding question has been assigned. Write your solution and run the public sample before submitting.";
+            }
+        } catch (error) {
+            console.error(error);
+            status.textContent = error.message;
+        }
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    async function runCode() {
+        const code = document.getElementById("codeEditor").value;
+        const button = document.getElementById("runButton");
+        const status = document.getElementById("statusMessage");
+        if (!codingQuestion) { status.textContent = "Coding question is still loading."; return; }
+        if (!code.trim() || code.trim() === starterCode[selectedLanguage].trim()) {
+            status.textContent = "Write your solution before running the sample.";
+            return;
+        }
+        button.disabled = true;
+        button.textContent = "⏳ Running Sample...";
+        status.textContent = "Running only the public sample test. Hidden tests are reserved for Submit Solution.";
+        try {
+            const response = await fetch(`${API_BASE}/api/run`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({assessment_id: Number(assessmentId), language: selectedLanguage, code})
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || data.error || "Unable to run code.");
+            displayResults(data, true);
+            status.textContent = data.passed === data.total ? "Public sample passed. You still need to submit for hidden-test evaluation." : "Public sample failed. Fix your code and try again.";
+        } catch (error) {
+            console.error(error);
+            status.textContent = error.message;
+        } finally {
+            button.disabled = false;
+            button.textContent = "▶ Run Sample";
+        }
+    }
+
+    async function submitSolution() {
+        const code = document.getElementById("codeEditor").value;
+        const button = document.getElementById("submitButton");
+        const runButton = document.getElementById("runButton");
+        const status = document.getElementById("statusMessage");
+        if (!codingQuestion) { status.textContent = "Coding question is still loading."; return; }
+        if (!code.trim() || code.trim() === starterCode[selectedLanguage].trim()) {
+            status.textContent = "You must write a solution. The starter template is not accepted as a submission.";
+            return;
+        }
+        if (!confirm("Submit your coding solution? You will not be able to change it after submission.")) return;
+
+        button.disabled = true;
+        runButton.disabled = true;
+        button.textContent = "⏳ Submitting...";
+        status.textContent = "Running hidden test cases and calculating your coding score...";
+        try {
+            const user = JSON.parse(sessionStorage.getItem("careerpredict_user") || "null");
+            const response = await fetch(`${API_BASE}/api/coding/submit`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    assessment_id: Number(assessmentId),
+                    user_id: Number(user?.id),
+                    language: selectedLanguage,
+                    code
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || data.error || "Unable to submit coding solution.");
+            codingSubmitted = true;
+            document.getElementById("codeEditor").disabled = true;
+            displayResults(data, false);
+            status.textContent = `Coding submission complete. Score: ${Number(data.score).toFixed(2)}%.`;
+            showFinalSummary(data.score, data.readiness_score);
+        } catch (error) {
+            console.error(error);
+            button.disabled = false;
+            runButton.disabled = false;
+            status.textContent = error.message;
+        } finally {
+            button.textContent = "✓ Submitted";
+        }
+    }
+
+    function displayResults(data, sampleRun) {
+        const resultPanel = document.getElementById("resultPanel");
+        document.getElementById("passedCount").textContent = data.passed ?? 0;
+        document.getElementById("totalCount").textContent = data.total ?? 0;
+        document.getElementById("codingScore").textContent = `${Number(data.score ?? 0)}%`;
+        const testResults = document.getElementById("testResults");
+        testResults.innerHTML = "";
+        (data.results || []).forEach(result => {
+            const div = document.createElement("div");
+            div.className = "test-result " + (result.passed ? "test-pass" : "test-fail");
+            div.textContent = result.passed ? `✓ Test ${result.test} passed` : `✗ Test ${result.test} failed${result.message ? ` — ${result.message}` : ""}`;
+            testResults.appendChild(div);
+        });
+        const note = document.getElementById("resultNote");
+        if (note) note.textContent = sampleRun ? "Public sample result. Hidden tests are not shown." : "Final hidden-test evaluation. Expected outputs remain hidden.";
+        resultPanel.style.display = "block";
+    }
+
+    function showFinalSummary(codingScore, readinessScore) {
+        const finalSummary = document.getElementById("finalSummary");
+        document.getElementById("finalCodingScore").textContent = `${Number(codingScore).toFixed(2)}%`;
+        document.getElementById("finalReadinessScore").textContent = `${Number(readinessScore).toFixed(2)}%`;
+        document.getElementById("finalAssessmentId").textContent = assessmentId || "-";
+        document.getElementById("readinessLevel").textContent = `Job Readiness Level: ${getReadinessLevel(readinessScore)}`;
+        if (assessmentId) document.getElementById("viewAssessmentResult").href = `assessment-result.html?assessment_id=${assessmentId}`;
+        finalSummary.style.display = "block";
+        finalSummary.scrollIntoView({behavior: "smooth", block: "start"});
+    }
+
+    function getReadinessLevel(score) {
+        const value = Number(score) || 0;
+        if (value >= 85) return "Excellent";
+        if (value >= 70) return "Good";
+        if (value >= 50) return "Moderate";
+        return "Needs Improvement";
+    }
+
+    loadCodingQuestion();
+
+
+    // ============================================================
+    // ANTI COPY / CUT / PASTE PROTECTION
+    // ============================================================
+
+    const codeEditor =
+        document.getElementById("codeEditor");
+
+
+    if (codeEditor) {
+
+
+        // --------------------------------------------------------
+        // BLOCK COPY
+        // --------------------------------------------------------
+
+        codeEditor.addEventListener(
+            "copy",
+            function (event) {
+
+                event.preventDefault();
+
+            }
+        );
+
+
+        // --------------------------------------------------------
+        // BLOCK CUT
+        // --------------------------------------------------------
+
+        codeEditor.addEventListener(
+            "cut",
+            function (event) {
+
+                event.preventDefault();
+
+            }
+        );
+
+
+        // --------------------------------------------------------
+        // BLOCK PASTE
+        // --------------------------------------------------------
+
+        codeEditor.addEventListener(
+            "paste",
+            function (event) {
+
+                event.preventDefault();
+
+            }
+        );
+
+
+        // --------------------------------------------------------
+        // BLOCK DRAG AND DROP
+        // --------------------------------------------------------
+
+        codeEditor.addEventListener(
+            "drop",
+            function (event) {
+
+                event.preventDefault();
+
+            }
+        );
+
+
+        // --------------------------------------------------------
+        // BLOCK RIGHT CLICK
+        // --------------------------------------------------------
+
+        codeEditor.addEventListener(
+            "contextmenu",
+            function (event) {
+
+                event.preventDefault();
+
+            }
+        );
+
+
+        // --------------------------------------------------------
+        // BLOCK KEYBOARD SHORTCUTS
+        // --------------------------------------------------------
+
+        codeEditor.addEventListener(
+            "keydown",
+            function (event) {
+
+
+                const key =
+                    event.key.toLowerCase();
+
+
+                // Ctrl + C
+                // Ctrl + V
+                // Ctrl + X
+                if (
+                    (event.ctrlKey || event.metaKey) &&
+                    (
+                        key === "c" ||
+                        key === "v" ||
+                        key === "x"
+                    )
+                ) {
+
+                    event.preventDefault();
+
+                    return;
+                }
+
+
+                // Ctrl + Shift + V
+                if (
+                    (event.ctrlKey || event.metaKey) &&
+                    event.shiftKey &&
+                    key === "v"
+                ) {
+
+                    event.preventDefault();
+
+                    return;
+                }
+
+
+                // Shift + Insert
+                if (
+                    event.shiftKey &&
+                    event.key === "Insert"
+                ) {
+
+                    event.preventDefault();
+
+                    return;
+                }
+
+            }
+        );
+
+    }
+
+
+
+    // ============================================================
+    // PAGE-LEVEL PASTE PROTECTION
+    // ============================================================
+
+    document.addEventListener(
+        "paste",
+        function (event) {
+
+            if (
+                event.target &&
+                event.target.id === "codeEditor"
+            ) {
+
+                event.preventDefault();
+
+            }
+
+        },
+        true
+    );
+
+
+    // ============================================================
+    // PAGE-LEVEL COPY PROTECTION
+    // ============================================================
+
+    document.addEventListener(
+        "copy",
+        function (event) {
+
+            if (
+                event.target &&
+                event.target.id === "codeEditor"
+            ) {
+
+                event.preventDefault();
+
+            }
+
+        },
+        true
+    );
+
+
+    // ============================================================
+    // PAGE-LEVEL CUT PROTECTION
+    // ============================================================
+
+    document.addEventListener(
+        "cut",
+        function (event) {
+
+            if (
+                event.target &&
+                event.target.id === "codeEditor"
+            ) {
+
+                event.preventDefault();
+
+            }
+
+        },
+        true
+    );
+
+
+    // ============================================================
+    // PAGE-LEVEL DROP PROTECTION
+    // ============================================================
+
+    document.addEventListener(
+        "drop",
+        function (event) {
+
+            if (
+                event.target &&
+                event.target.id === "codeEditor"
+            ) {
+
+                event.preventDefault();
+
+            }
+
+        },
+        true
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

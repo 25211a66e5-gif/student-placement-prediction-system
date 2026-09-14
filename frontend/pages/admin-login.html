@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | Student Placement Predictor</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,Arial,sans-serif;background:#071124;color:#eaf3ff;display:flex;align-items:center;justify-content:center}
+.card{width:min(430px,92%);padding:38px;border:1px solid #263a61;border-radius:22px;background:rgba(11,24,48,.94);box-shadow:0 25px 80px rgba(0,0,0,.35)}
+.logo{text-align:center;font-size:25px;font-weight:800;letter-spacing:.5px}.logo span{color:#71edff}.sub{text-align:center;color:#8ea7ce;margin:9px 0 30px}
+label{display:block;margin:16px 0 7px;color:#a9c0e4;font-size:14px}input{width:100%;padding:13px 14px;border:1px solid #30476f;border-radius:11px;background:#08162e;color:#fff;outline:none}input:focus{border-color:#71edff}
+button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:11px;background:linear-gradient(90deg,#48dff8,#8a7dff);color:#04101f;font-weight:800;cursor:pointer}
+.msg{margin-top:16px;text-align:center;min-height:20px;color:#ff9fa8;font-size:14px}.back{display:block;text-align:center;margin-top:18px;color:#71edff;text-decoration:none;font-size:14px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Student Placement<span>Predictor</span></div>
+  <div class="sub">Administrator Console</div>
+  <form id="loginForm">
+    <label>Email</label>
+    <input id="email" type="email" required autocomplete="username">
+    <label>Password</label>
+    <input id="password" type="password" required autocomplete="current-password">
+    <button type="submit">Sign In as Administrator</button>
+    <div class="msg" id="message"></div>
+  </form>
+  <a class="back" href="login.html">← Student Login</a>
+</div>
+<script>
+const API_BASE = "http://127.0.0.1:5000";
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const message = document.getElementById("message");
+  message.textContent = "Signing in...";
+  try {
+    const response = await fetch(`${API_BASE}/api/login`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        email:document.getElementById("email").value.trim(),
+        password:document.getElementById("password").value
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Login failed.");
+    if (!data.user || String(data.user.role).toLowerCase() !== "admin") {
+      throw new Error("This account does not have administrator access.");
+    }
+    sessionStorage.setItem("careerpredict_user", JSON.stringify(data.user));
+    window.location.href = "admin-dashboard.html";
+  } catch (error) {
+    message.textContent = error.message;
+  }
+});
+</script>
+</body>
+</html>

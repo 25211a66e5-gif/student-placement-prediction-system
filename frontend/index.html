@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Placement Prediction System using Machine Learning</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            background: #050914;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* =========================
+           BACKGROUND
+        ========================= */
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: #3155ff;
+            opacity: 0.12;
+            filter: blur(150px);
+            border-radius: 50%;
+            top: -250px;
+            left: -200px;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: #00d9ff;
+            opacity: 0.08;
+            filter: blur(150px);
+            border-radius: 50%;
+            right: -200px;
+            bottom: -200px;
+            pointer-events: none;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            height: 82px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: rgba(5, 9, 20, 0.82);
+            backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand img {
+            width: 53px;
+            height: 53px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-name span {
+            color: #42dfff;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #b9c4d8;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 11px 17px;
+            border-radius: 8px;
+            transition: 0.25s;
+        }
+
+        nav a:hover {
+            color: white;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .login-btn {
+            border: 1px solid rgba(66,223,255,0.5);
+            color: #42dfff !important;
+        }
+
+        .register-btn {
+            background: linear-gradient(135deg, #3155ff, #6d4cff);
+            color: white !important;
+            box-shadow: 0 8px 25px rgba(49,85,255,0.25);
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            max-width: 1250px;
+            margin: auto;
+            min-height: 700px;
+
+            padding: 100px 6% 90px;
+
+            display: grid;
+            grid-template-columns: 1fr 0.95fr;
+            align-items: center;
+            gap: 70px;
+
+            position: relative;
+        }
+
+        .hero-left {
+            position: relative;
+            z-index: 2;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 8px 13px;
+            border-radius: 30px;
+
+            border: 1px solid rgba(66,223,255,0.22);
+            background: rgba(66,223,255,0.06);
+
+            color: #42dfff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.7px;
+
+            margin-bottom: 25px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #42dfff;
+            box-shadow: 0 0 12px #42dfff;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 5.5vw, 76px);
+            line-height: 1.02;
+            letter-spacing: -3.5px;
+            max-width: 720px;
+            margin-bottom: 27px;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(90deg, #42dfff, #7181ff, #9b65ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-description {
+            color: #9aa8bf;
+            font-size: 17px;
+            line-height: 1.75;
+            max-width: 620px;
+            margin-bottom: 34px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            text-decoration: none;
+            color: white;
+
+            padding: 15px 23px;
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            background: linear-gradient(135deg, #3155ff, #704dff);
+
+            box-shadow:
+                0 12px 35px rgba(49,85,255,0.28);
+
+            transition: 0.25s;
+        }
+
+        .primary:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 17px 40px rgba(49,85,255,0.4);
+        }
+
+        .secondary {
+            text-decoration: none;
+            color: #c6d0e0;
+            padding: 15px 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .secondary:hover {
+            color: white;
+        }
+
+        /* =========================
+           DASHBOARD CARD
+        ========================= */
+
+        .dashboard-container {
+            position: relative;
+        }
+
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: #3155ff;
+            filter: blur(100px);
+            opacity: 0.2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .dashboard {
+            position: relative;
+            background: rgba(13, 20, 37, 0.9);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            border-radius: 22px;
+            padding: 24px;
+
+            box-shadow:
+                0 35px 90px rgba(0,0,0,0.45),
+                inset 0 1px rgba(255,255,255,0.04);
+
+            transform: perspective(1200px) rotateY(-4deg);
+
+            transition: 0.4s;
+        }
+
+        .dashboard:hover {
+            transform: perspective(1200px) rotateY(0deg) translateY(-5px);
+        }
+
+        .dash-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .dash-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .dash-status {
+            font-size: 10px;
+            color: #50e4a1;
+            background: rgba(80,228,161,0.08);
+            border: 1px solid rgba(80,228,161,0.2);
+            padding: 6px 9px;
+            border-radius: 20px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(255,255,255,0.035);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #3155ff, #754eff);
+            font-weight: 800;
+        }
+
+        .profile-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .profile-role {
+            color: #748198;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        .main-score {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .score-card {
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .score-label {
+            color: #7f8ca2;
+            font-size: 10px;
+            margin-bottom: 8px;
+        }
+
+        .big-score {
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .blue {
+            color: #42dfff;
+        }
+
+        .purple {
+            color: #8d75ff;
+        }
+
+        .score-note {
+            color: #58dca1;
+            font-size: 9px;
+            margin-top: 5px;
+        }
+
+        .skills {
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .skills-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 17px;
+        }
+
+        .skills-header strong {
+            font-size: 12px;
+        }
+
+        .skills-header span {
+            font-size: 10px;
+            color: #6f7d94;
+        }
+
+        .skill {
+            margin-bottom: 13px;
+        }
+
+        .skill:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 6px;
+            color: #aeb9ca;
+        }
+
+        .bar {
+            height: 5px;
+            background: #202a3e;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar span {
+            display: block;
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #3155ff, #42dfff);
+        }
+
+        .bar-1 {
+            width: 86%;
+        }
+
+        .bar-2 {
+            width: 74%;
+        }
+
+        .bar-3 {
+            width: 81%;
+        }
+
+        .bar-4 {
+            width: 68%;
+        }
+
+        .recommendation {
+            margin-top: 12px;
+            padding: 13px;
+            border-radius: 12px;
+            background: linear-gradient(
+                135deg,
+                rgba(49,85,255,0.13),
+                rgba(111,76,255,0.08)
+            );
+            border: 1px solid rgba(100,100,255,0.14);
+        }
+
+        .recommendation-title {
+            color: #42dfff;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .recommendation p {
+            color: #9ba8bd;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            max-width: 1100px;
+            margin: 0 auto 80px;
+
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .stat {
+            text-align: center;
+            padding: 25px 15px;
+            border-right: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 25px;
+            margin-bottom: 5px;
+        }
+
+        .stat span {
+            color: #707d93;
+            font-size: 11px;
+        }
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .section {
+            max-width: 1150px;
+            margin: auto;
+            padding: 80px 6%;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .section-label {
+            color: #42dfff;
+            font-size: 10px;
+            letter-spacing: 2px;
+            font-weight: 800;
+            margin-bottom: 13px;
+        }
+
+        .section-heading h2 {
+            font-size: 38px;
+            letter-spacing: -1.5px;
+            margin-bottom: 13px;
+        }
+
+        .section-heading p {
+            color: #7f8ca2;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+            margin-top: 48px;
+        }
+
+        .feature {
+            padding: 27px;
+            border-radius: 15px;
+
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.08);
+
+            transition: 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            border-color: rgba(66,223,255,0.25);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .feature-number {
+            color: #42dfff;
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 22px;
+        }
+
+        .feature h3 {
+            font-size: 17px;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #748198;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           HOW IT WORKS
+        ========================= */
+
+        .process {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .process-step {
+            position: relative;
+            text-align: center;
+        }
+
+        .circle {
+            width: 48px;
+            height: 48px;
+            margin: auto auto 17px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            color: #42dfff;
+            font-size: 13px;
+            font-weight: 800;
+
+            background: rgba(66,223,255,0.06);
+            border: 1px solid rgba(66,223,255,0.25);
+
+            box-shadow: 0 0 25px rgba(66,223,255,0.08);
+        }
+
+        .process-step h3 {
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .process-step p {
+            color: #6f7d94;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           CTA
+        ========================= */
+
+        .cta {
+            max-width: 1100px;
+            margin: 50px auto 90px;
+            padding: 70px 30px;
+
+            text-align: center;
+
+            border-radius: 22px;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(49,85,255,0.25),
+                    transparent 55%
+                ),
+                #0b1223;
+
+            border: 1px solid rgba(255,255,255,0.09);
+        }
+
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .cta p {
+            color: #7f8ca2;
+            font-size: 14px;
+            margin-bottom: 27px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 25px 7%;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            color: #58657a;
+            font-size: 11px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 950px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+                padding-top: 70px;
+            }
+
+            .dashboard {
+                max-width: 600px;
+                margin: auto;
+                transform: none;
+            }
+
+            .stats {
+                margin-left: 6%;
+                margin-right: 6%;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .process {
+                grid-template-columns: 1fr 1fr;
+                gap: 35px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 0 20px;
+            }
+
+            .brand-name {
+                font-size: 19px;
+            }
+
+            .brand img {
+                width: 43px;
+                height: 43px;
+            }
+
+            nav a {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            nav a:not(.login-btn):not(.register-btn) {
+                display: none;
+            }
+
+            .hero {
+                padding: 60px 20px;
+            }
+
+            .hero h1 {
+                font-size: 43px;
+                letter-spacing: -2px;
+            }
+
+            .hero-description {
+                font-size: 15px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dashboard {
+                padding: 17px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat:nth-child(2) {
+                border-right: none;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading h2 {
+                font-size: 30px;
+            }
+
+            .cta {
+                margin-left: 20px;
+                margin-right: 20px;
+                padding: 50px 20px;
+            }
+
+            .cta h2 {
+                font-size: 29px;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="brand">
+
+        <img
+            src="../assets/careerpredict-logo.png"
+            alt="CareerPredict"
+        >
+
+        <div class="brand-name">
+            Student Placement<span>Predictor</span>
+        </div>
+
+    </div>
+
+    <nav>
+
+        <a href="#features">
+            Features
+        </a>
+
+        <a href="#process">
+            How It Works
+        </a>
+
+        <a href="pages/login.html" class="login-btn">
+            Login
+        </a>
+
+        <a href="pages/register.html" class="register-btn">
+            Register
+        </a>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-left">
+
+        <div class="eyebrow">
+            <span class="live-dot"></span>
+            MACHINE LEARNING • PLACEMENT INTELLIGENCE
+        </div>
+
+        <h1>
+            Student Placement
+            <br>
+            <span class="gradient">
+                Predict your future.
+            </span>
+            <br>
+            using Machine Learning
+        </h1>
+
+        <p class="hero-description">
+            An intelligent machine learning-based system that analyzes
+            student academic performance, technical skills, assessments,
+            projects, internships and other relevant factors to predict
+            placement potential and provide personalized career-readiness insights.
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="pages/register.html" class="primary">
+                Create Your Profile
+                <span>→</span>
+            </a>
+
+            <a href="#features" class="secondary">
+                Explore Platform
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- DASHBOARD PREVIEW -->
+
+    <div class="dashboard-container">
+
+        <div class="glow"></div>
+
+        <div class="dashboard">
+
+            <div class="dash-top">
+
+                <div class="dash-title">
+                    Placement Intelligence
+                </div>
+
+                <div class="dash-status">
+                    ● ANALYSIS READY
+                </div>
+
+            </div>
+
+
+            <div class="profile">
+
+                <div class="avatar">
+                    CP
+                </div>
+
+                <div>
+
+                    <div class="profile-name">
+                        Student Profile
+                    </div>
+
+                    <div class="profile-role">
+                        Software Developer
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="main-score">
+
+                <div class="score-card">
+
+                    <div class="score-label">
+                        PLACEMENT PROBABILITY
+                    </div>
+
+                    <div class="big-score blue">
+                        82%
+                    </div>
+
+                    <div class="score-note">
+                        ↑ Strong profile
+                    </div>
+
+                </div>
+
+
+                <div class="score-card">
+
+                    <div class="score-label">
+                        JOB READINESS
+                    </div>
+
+                    <div class="big-score purple">
+                        78%
+                    </div>
+
+                    <div class="score-note">
+                        ↑ Improving
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="skills">
+
+                <div class="skills-header">
+
+                    <strong>
+                        Skill Intelligence
+                    </strong>
+
+                    <span>
+                        Overall profile
+                    </span>
+
+                </div>
+
+
+                <div class="skill">
+
+                    <div class="skill-info">
+                        <span>Technical Skills</span>
+                        <span>86%</span>
+                    </div>
+
+                    <div class="bar">
+                        <span class="bar-1"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="skill">
+
+                    <div class="skill-info">
+                        <span>Aptitude</span>
+                        <span>74%</span>
+                    </div>
+
+                    <div class="bar">
+                        <span class="bar-2"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="skill">
+
+                    <div class="skill-info">
+                        <span>Problem Solving</span>
+                        <span>81%</span>
+                    </div>
+
+                    <div class="bar">
+                        <span class="bar-3"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="skill">
+
+                    <div class="skill-info">
+                        <span>Communication</span>
+                        <span>68%</span>
+                    </div>
+
+                    <div class="bar">
+                        <span class="bar-4"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="recommendation">
+
+                    <div class="recommendation-title">
+                        ⚡ NEXT FOCUS
+                    </div>
+
+                    <p>
+                        Improve communication and DSA performance
+                        to increase role readiness.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= STATS ================= -->
+
+<div class="stats">
+
+    <div class="stat">
+        <strong>01</strong>
+        <span>Student Profile</span>
+    </div>
+
+    <div class="stat">
+        <strong>06</strong>
+        <span>Assessment Areas</span>
+    </div>
+
+    <div class="stat">
+        <strong>02</strong>
+        <span>AI Analysis Models</span>
+    </div>
+
+    <div class="stat">
+        <strong>360°</strong>
+        <span>Career Analysis</span>
+    </div>
+
+</div>
+
+
+<!-- ================= FEATURES ================= -->
+
+<section class="section" id="features">
+
+    <div class="section-heading">
+
+        <div class="section-label">
+            PLATFORM CAPABILITIES
+        </div>
+
+        <h2>
+            More than a placement prediction.
+        </h2>
+
+        <p>
+            CareerPredict creates a complete picture of your
+            current career readiness and identifies what you
+            should improve next.
+        </p>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+        <div class="feature">
+
+            <div class="feature-number">
+                01 / PREDICTION
+            </div>
+
+            <h3>
+                Placement Prediction
+            </h3>
+
+            <p>
+                Analyze relevant academic and profile factors
+                to estimate placement likelihood using a machine
+                learning model.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-number">
+                02 / READINESS
+            </div>
+
+            <h3>
+                Job Readiness
+            </h3>
+
+            <p>
+                Measure how prepared you are for your selected
+                target role based on demonstrated performance.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-number">
+                03 / ASSESSMENT
+            </div>
+
+            <h3>
+                Personalized Assessment
+            </h3>
+
+            <p>
+                Technical, aptitude, logical reasoning,
+                communication and coding assessments tailored
+                to your target role.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-number">
+                04 / CODING
+            </div>
+
+            <h3>
+                Secure Coding Test
+            </h3>
+
+            <p>
+                Choose Java, Python, C, C++ or JavaScript when
+                you reach the coding stage and solve programming
+                problems in a controlled environment.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-number">
+                05 / ANALYSIS
+            </div>
+
+            <h3>
+                Skill Gap Analysis
+            </h3>
+
+            <p>
+                Discover specific areas where your performance
+                is weak instead of receiving only one overall score.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-number">
+                06 / RECOMMENDATIONS
+            </div>
+
+            <h3>
+                Personalized Recommendations
+            </h3>
+
+            <p>
+                Receive targeted recommendations based on your
+                assessment results, skills and career goals.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section class="section" id="process">
+
+    <div class="section-heading">
+
+        <div class="section-label">
+            YOUR JOURNEY
+        </div>
+
+        <h2>
+            From profile to placement intelligence.
+        </h2>
+
+        <p>
+            A structured process designed to understand your
+            strengths, weaknesses and career readiness.
+        </p>
+
+    </div>
+
+
+    <div class="process">
+
+        <div class="process-step">
+
+            <div class="circle">
+                01
+            </div>
+
+            <h3>
+                Build Profile
+            </h3>
+
+            <p>
+                Academic details, skills, projects,
+                internships and achievements.
+            </p>
+
+        </div>
+
+
+        <div class="process-step">
+
+            <div class="circle">
+                02
+            </div>
+
+            <h3>
+                Choose Target
+            </h3>
+
+            <p>
+                Select your engineering branch and
+                target job role.
+            </p>
+
+        </div>
+
+
+        <div class="process-step">
+
+            <div class="circle">
+                03
+            </div>
+
+            <h3>
+                Demonstrate Skills
+            </h3>
+
+            <p>
+                Complete assessments and coding challenges
+                with the option to skip questions.
+            </p>
+
+        </div>
+
+
+        <div class="process-step">
+
+            <div class="circle">
+                04
+            </div>
+
+            <h3>
+                Get Intelligence
+            </h3>
+
+            <p>
+                View placement prediction, readiness,
+                weaknesses and recommendations.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CTA ================= -->
+
+<section class="cta">
+
+    <h2>
+        Ready to discover your career readiness?
+    </h2>
+
+    <p>
+        Create your CareerPredict profile and begin your journey.
+    </p>
+
+    <a href="pages/register.html" class="primary">
+        Start Your Career Analysis →
+    </a>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <span>
+        © 2026 CareerPredict
+    </span>
+
+    <span>
+        AI Placement Prediction & Job Readiness System
+    </span>
+
+</footer>
+
+
+</body>
+</html>

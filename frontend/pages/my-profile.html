@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile | CareerPredict</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    min-height:100vh;
+    color:#fff;
+    background:
+        radial-gradient(circle at 12% 18%,rgba(0,229,255,.12),transparent 30%),
+        radial-gradient(circle at 88% 12%,rgba(124,58,237,.16),transparent 30%),
+        #050816;
+}
+.navbar{
+    border-bottom:1px solid rgba(255,255,255,.08);
+    background:rgba(4,8,24,.88);
+    backdrop-filter:blur(16px);
+}
+.nav-inner{
+    width:min(1180px,92%);
+    min-height:78px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand img{width:58px;height:58px;object-fit:contain}
+.brand-name{color:#fff;font-size:21px;font-weight:800}
+.brand-name span{color:#55e9ff}
+.nav-actions{display:flex;align-items:center;gap:20px}
+.nav-link{color:#b8c7e8;text-decoration:none;font-size:14px}
+.nav-link:hover{color:#fff}
+.logout-btn{
+    border:1px solid rgba(0,229,255,.35);
+    background:rgba(0,229,255,.08);
+    color:#8eefff;
+    padding:9px 16px;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:14px;
+}
+.container{width:min(1080px,92%);margin:auto;padding:55px 0 70px}
+.eyebrow{color:#61e8ff;font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:12px}
+h1{font-size:clamp(32px,5vw,48px);line-height:1.1;margin-bottom:12px}
+.header-text{color:#9baac9;line-height:1.7;max-width:720px;margin-bottom:30px}
+.card{
+    background:rgba(11,17,39,.78);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:20px;
+    padding:28px;
+    margin-bottom:22px;
+    box-shadow:0 25px 80px rgba(0,0,0,.22);
+}
+.section-title{font-size:21px;margin-bottom:6px}
+.section-note{color:#7f8daa;font-size:13px;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.full{grid-column:1/-1}
+label{display:block;color:#b9c8e5;font-size:13px;font-weight:600;margin-bottom:7px}
+input,textarea{
+    width:100%;
+    padding:12px 13px;
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:10px;
+    background:#030818;
+    color:#fff;
+    outline:none;
+    font-size:14px;
+}
+input:focus,textarea:focus{border-color:rgba(0,229,255,.55);box-shadow:0 0 0 3px rgba(0,229,255,.07)}
+input:disabled{color:#77839d;background:#080d20;cursor:not-allowed}
+textarea{min-height:105px;resize:vertical}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+button,.action-link{
+    padding:13px 20px;
+    border-radius:11px;
+    border:0;
+    font-weight:800;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+}
+.save-btn{background:linear-gradient(135deg,#00d9ff,#6d4aff);color:#fff;min-width:170px}
+.save-btn:disabled{opacity:.6;cursor:wait}
+.secondary-btn{
+    border:1px solid rgba(0,229,255,.3);
+    background:rgba(0,229,255,.06);
+    color:#8eefff;
+}
+.resume-box{
+    padding:15px;
+    border:1px solid rgba(0,229,255,.16);
+    background:rgba(0,229,255,.04);
+    border-radius:12px;
+    color:#aab8d4;
+    font-size:13px;
+}
+.resume-box a{color:#71edff;text-decoration:none}
+.message{display:none;margin-top:16px;padding:12px;border-radius:10px;font-size:13px}
+.message.success{display:block;background:rgba(34,197,94,.1);color:#82f2a7}
+.message.error{display:block;background:rgba(239,68,68,.1);color:#ff9b9b}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:25px 0;text-align:center;color:#56627c;font-size:12px}
+@media(max-width:700px){
+    .nav-link{display:none}
+    .grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+    .card{padding:20px}
+    .brand-name{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="../index.html" class="brand">
+            <img src="../../assets/careerpredict-logo.png" alt="CareerPredict Logo">
+            <div class="brand-name">Student Placement<span> Predictor</span></div>
+        </a>
+        <div class="nav-actions">
+            <a href="../index.html" class="nav-link">Home</a>
+            <a href="profile.html" class="nav-link">Placement Profile</a>
+            <a href="forgot-password.html" class="nav-link">Reset Password</a>
+            <button type="button" class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="eyebrow">CAREERPREDICT • MY PROFILE</div>
+    <h1>Manage your profile</h1>
+    <p class="header-text">
+        View and update your personal, academic and career information.
+        Your saved profile is used by the placement prediction, assessment
+        and career-readiness features.
+    </p>
+
+    <form id="profileForm">
+
+        <section class="card">
+            <h2 class="section-title">👤 Personal Information</h2>
+            <p class="section-note">Update the account information associated with your CareerPredict account.</p>
+            <div class="grid">
+                <div>
+                    <label for="first_name">First Name</label>
+                    <input id="first_name" required>
+                </div>
+                <div>
+                    <label for="last_name">Last Name</label>
+                    <input id="last_name" required>
+                </div>
+                <div>
+                    <label for="email">Email Address</label>
+                    <input id="email" type="email" disabled>
+                </div>
+                <div>
+                    <label for="phone">Phone Number</label>
+                    <input id="phone" required>
+                </div>
+                <div class="full">
+                    <label for="college">College / University</label>
+                    <input id="college" required>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">🎓 Academic & Career Information</h2>
+            <p class="section-note">These values are used for placement prediction and company eligibility analysis.</p>
+            <div class="grid">
+                <div>
+                    <label for="tenth_percentage">10th Percentage</label>
+                    <input id="tenth_percentage" type="number" min="0" max="100" step="0.01">
+                </div>
+                <div>
+                    <label for="twelfth_percentage">12th Percentage</label>
+                    <input id="twelfth_percentage" type="number" min="0" max="100" step="0.01">
+                </div>
+                <div>
+                    <label for="cgpa">B.Tech / B.E. CGPA</label>
+                    <input id="cgpa" type="number" min="0" max="10" step="0.01">
+                </div>
+                <div>
+                    <label for="graduation_year">Graduation Year</label>
+                    <input id="graduation_year" type="number" min="2020" max="2100">
+                </div>
+                <div>
+                    <label for="backlogs">Current Backlogs</label>
+                    <input id="backlogs" type="number" min="0" step="1">
+                </div>
+                <div>
+                    <label for="branch">Engineering Branch</label>
+                    <input id="branch">
+                </div>
+                <div class="full">
+                    <label for="target_job_role">Target Job Role</label>
+                    <input id="target_job_role">
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">💻 Skills & Experience</h2>
+            <p class="section-note">Keep these details updated so your career analysis stays relevant.</p>
+            <div class="grid">
+                <div class="full">
+                    <label for="technical_skills">Technical Skills</label>
+                    <input id="technical_skills" placeholder="Java, Python, SQL, React, etc.">
+                </div>
+                <div class="full">
+                    <label for="certifications">Certifications</label>
+                    <textarea id="certifications"></textarea>
+                </div>
+                <div class="full">
+                    <label for="projects">Projects</label>
+                    <textarea id="projects"></textarea>
+                </div>
+                <div class="full">
+                    <label for="internships">Internships</label>
+                    <textarea id="internships"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">🔗 Professional Links & Resume</h2>
+            <p class="section-note">Add links that help present your professional profile.</p>
+            <div class="grid">
+                <div>
+                    <label for="github_url">GitHub</label>
+                    <input id="github_url" type="url" placeholder="https://github.com/...">
+                </div>
+                <div>
+                    <label for="linkedin_url">LinkedIn</label>
+                    <input id="linkedin_url" type="url" placeholder="https://linkedin.com/in/...">
+                </div>
+                <div>
+                    <label for="portfolio_url">Portfolio</label>
+                    <input id="portfolio_url" type="url" placeholder="https://...">
+                </div>
+                <div>
+                    <label for="resume_url">Resume Link</label>
+                    <input id="resume_url" type="url" placeholder="https://...">
+                </div>
+                <div class="full resume-box" id="resumeStatus">
+                    Resume status: checking...
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">🔐 Account Security</h2>
+            <p class="section-note">Need to change your password? Use the secure OTP-based password reset flow.</p>
+            <a class="action-link secondary-btn" href="forgot-password.html">Reset Password with OTP</a>
+        </section>
+
+        <div class="actions">
+            <button class="save-btn" id="saveButton" type="submit">Save Changes</button>
+            <a class="action-link secondary-btn" href="profile.html">← Placement Profile</a>
+        </div>
+        <div id="message" class="message"></div>
+    </form>
+</main>
+
+<footer>
+    CareerPredict • Student Placement Prediction System using Machine Learning © 2026
+</footer>
+
+<script>
+const API = "http://127.0.0.1:5000";
+const storedUser = sessionStorage.getItem("careerpredict_user");
+let user = null;
+
+try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+} catch {
+    user = null;
+}
+
+if (!user || !user.id) {
+    window.location.href = "login.html";
+}
+
+const fields = [
+    "first_name","last_name","email","phone","college",
+    "tenth_percentage","twelfth_percentage","cgpa","graduation_year",
+    "backlogs","branch","target_job_role","technical_skills",
+    "certifications","projects","internships",
+    "github_url","linkedin_url","portfolio_url","resume_url"
+];
+
+function $(id) {
+    return document.getElementById(id);
+}
+
+function showMessage(text, type) {
+    const box = $("message");
+    box.textContent = text;
+    box.className = "message " + type;
+}
+
+function validateProfile() {
+    const tenth = Number($("tenth_percentage").value);
+    const twelfth = Number($("twelfth_percentage").value);
+    const cgpa = Number($("cgpa").value);
+    const year = Number($("graduation_year").value);
+    const backlogs = Number($("backlogs").value);
+
+    if (!Number.isNaN(tenth) && (tenth < 0 || tenth > 100)) {
+        throw new Error("10th percentage must be between 0 and 100.");
+    }
+    if (!Number.isNaN(twelfth) && (twelfth < 0 || twelfth > 100)) {
+        throw new Error("12th percentage must be between 0 and 100.");
+    }
+    if (!Number.isNaN(cgpa) && (cgpa < 0 || cgpa > 10)) {
+        throw new Error("CGPA must be between 0 and 10.");
+    }
+    if (!Number.isNaN(year) && (year < 2020 || year > 2100)) {
+        throw new Error("Please enter a valid graduation year.");
+    }
+    if (!Number.isNaN(backlogs) && (backlogs < 0 || !Number.isInteger(backlogs))) {
+        throw new Error("Backlogs must be a whole number of 0 or more.");
+    }
+}
+
+async function loadProfile() {
+    try {
+        const response = await fetch(`${API}/api/account/profile/${encodeURIComponent(user.id)}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Unable to load profile.");
+        }
+
+        const combined = {...(data.user || {}), ...(data.profile || {})};
+
+        fields.forEach(field => {
+            if ($(field)) {
+                $(field).value = combined[field] ?? "";
+            }
+        });
+
+        const resume = combined.resume_url;
+        if (resume) {
+            $("resumeStatus").innerHTML =
+                `Resume status: <strong>Saved</strong> · <a href="${escapeHtml(resume)}" target="_blank" rel="noopener">Open Resume Link</a>`;
+        } else {
+            $("resumeStatus").textContent =
+                "Resume status: No resume link saved. Resume upload and analysis remain available from the Placement Profile.";
+        }
+    } catch (error) {
+        showMessage(error.message || "Unable to load profile.", "error");
+    }
+}
+
+$("profileForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    try {
+        validateProfile();
+
+        const data = {user_id: user.id};
+
+        fields.forEach(field => {
+            if (field !== "email") {
+                data[field] = $(field).value.trim();
+            }
+        });
+
+        const saveButton = $("saveButton");
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+
+        const response = await fetch(`${API}/api/account/profile`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || result.message || "Profile update failed.");
+        }
+
+        if (result.user) {
+            user = {...user, ...result.user};
+            sessionStorage.setItem("careerpredict_user", JSON.stringify(user));
+        }
+
+        showMessage("✓ Profile updated successfully.", "success");
+        saveButton.textContent = "Saved ✓";
+
+        setTimeout(() => {
+            saveButton.disabled = false;
+            saveButton.textContent = "Save Changes";
+        }, 1200);
+
+    } catch (error) {
+        $("saveButton").disabled = false;
+        $("saveButton").textContent = "Save Changes";
+        showMessage(error.message || "Unable to update profile.", "error");
+    }
+});
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function logout() {
+    sessionStorage.removeItem("careerpredict_user");
+    window.location.href = "login.html";
+}
+
+loadProfile();
+</script>
+</body>
+</html>

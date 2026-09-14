@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Student Placement Prediction</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #07111f, #0b1830, #111d3d);
+            color: white;
+        }
+
+        /* Header */
+        header {
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 55px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(5, 12, 25, 0.75);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .brand span {
+            color: #43d9ff;
+        }
+
+        nav {
+            display: flex;
+            gap: 12px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            background: rgba(67, 217, 255, 0.12);
+            color: #43d9ff;
+        }
+
+        nav .register-btn {
+            border: 1px solid #43d9ff;
+            color: #43d9ff;
+        }
+
+        /* Main */
+        .main-container {
+            min-height: calc(100vh - 75px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 30px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 70px;
+            align-items: center;
+        }
+
+        /* Left Section */
+        .intro {
+            padding: 20px;
+        }
+
+        .intro h1 {
+            font-size: 48px;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .intro h1 span {
+            color: #43d9ff;
+        }
+
+        .intro p {
+            color: #b7c5d9;
+            font-size: 17px;
+            line-height: 1.7;
+            max-width: 570px;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            display: grid;
+            gap: 16px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #dce7f5;
+        }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(67, 217, 255, 0.12);
+            border: 1px solid rgba(67, 217, 255, 0.25);
+            color: #43d9ff;
+            font-size: 20px;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: rgba(16, 28, 52, 0.92);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            padding: 38px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+        }
+
+        .login-card h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .login-card .subtitle {
+            color: #9eacc0;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #d9e4f2;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 9px;
+            border: 1px solid #344563;
+            background: #0b162b;
+            color: white;
+            outline: none;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #43d9ff;
+            box-shadow: 0 0 0 3px rgba(67,217,255,0.08);
+        }
+
+        .password-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #aebbd0;
+            font-size: 13px;
+        }
+
+        .remember input {
+            accent-color: #43d9ff;
+        }
+
+        .forgot {
+            color: #43d9ff;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .forgot:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #20b9e8, #557cff);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(50,170,255,0.25);
+        }
+
+        .register-text {
+            text-align: center;
+            margin-top: 25px;
+            color: #9eacc0;
+            font-size: 14px;
+        }
+
+        .register-text a {
+            color: #43d9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 850px) {
+
+            header {
+                padding: 0 25px;
+            }
+
+            .login-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                gap: 30px;
+            }
+
+            .intro {
+                text-align: center;
+            }
+
+            .intro h1 {
+                font-size: 38px;
+            }
+
+            .intro p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .feature {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            header {
+                padding: 0 18px;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            nav a {
+                padding: 8px 12px;
+            }
+
+            .main-container {
+                padding: 30px 15px;
+            }
+
+            .login-card {
+                padding: 28px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="brand">
+        Student<span>Placement</span>Predictor<span></span>
+    </div>
+
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="register.html" class="register-btn">Register</a>
+    </nav>
+
+</header>
+
+
+<main class="main-container">
+
+    <div class="login-wrapper">
+
+        <!-- LEFT SIDE -->
+        <section class="intro">
+
+            <h1>
+                Welcome Back to
+                <span>Student Placement Predictor</span>
+            </h1>
+
+            <p>
+                Continue your journey toward placement success.
+                Access your personalized placement prediction,
+                job-readiness analysis, assessments and career
+                recommendations.
+            </p>
+
+            <div class="features">
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div>Personalized Placement Prediction</div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div>Job Readiness Assessment</div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div>Skill Gap & Career Recommendations</div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">✓</div>
+                    <div>Secure Coding & Technical Assessments</div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT SIDE -->
+        <section class="login-card">
+
+            <h2>Login</h2>
+
+            <p class="subtitle">
+                Sign in to continue to your account.
+            </p>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                    <a href="forgot-password.html"
+                        style="display:block; text-align:right; margin-top:8px; color:#71edff; font-size:13px; text-decoration:none;">
+                            Forgot Password?
+                    </a>
+
+                </div>
+
+
+                <div class="password-row">
+
+                    <label class="remember">
+                        <input type="checkbox" id="remember">
+                        Remember me
+                    </label>
+
+                    
+
+                </div>
+
+
+                <button type="submit" class="login-btn">
+                    Login
+                </button>
+
+                <div id="message" class="message"></div>
+
+            </form>
+
+
+            <div class="register-text">
+
+                Don't have an account?
+                <a href="register.html">Create Account</a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<script>
+
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
+
+    function showMessage(text, success = false) {
+
+        message.style.display = "block";
+
+        if (success) {
+            message.style.color = "#50e4a1";
+            message.style.background = "rgba(80,228,161,0.08)";
+        } else {
+            message.style.color = "#ff7185";
+            message.style.background = "rgba(255,113,133,0.08)";
+        }
+
+        message.textContent = text;
+    }
+
+
+    if (!email || !password) {
+
+        showMessage("Please enter your email and password.");
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:5000/api/login",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            }
+        );
+
+
+        const result = await response.json();
+
+
+        if (response.ok) {
+
+            sessionStorage.setItem(
+                "careerpredict_user",
+                JSON.stringify(result.user)
+            );
+
+            showMessage("Login successful!", true);
+
+            setTimeout(function() {
+
+                window.location.href = "profile.html";
+
+            }, 1000);
+
+            return;
+        }
+
+
+        showMessage(
+            result.error || "Invalid email or password."
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to connect to the server. Make sure Flask is running."
+        );
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

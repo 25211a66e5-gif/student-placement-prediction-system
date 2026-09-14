@@ -1,0 +1,48 @@
+.venv/
+venv/
+env/
+
+__pycache__/
+*.py[cod]
+
+.env
+*.env
+
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+backup_files/
+CareerPredict_Coding_Assessment_Upgrade/
+new file/
+
+.vscode/
+
+.DS_Store
+Thumbs.db
+
+*.log
+# Old backend backup files
+backend/app_before_assessment_api.py
+backend/backup_app.py
+backend/assessment_api_backup.py
+frontend/pages/assessment-result_backup.html
+frontend/pages/profile_backup.html
+frontend/pages/my-profile_backup.html
+frontend/pages/profile_backup (2).html
+frontend/pages/assessment-result_backup(1).html
+frontend/pages/coding-test_backup.html
+backend/seed_questions_backup.py
+
+# Backup files
+backend/assessment_api_backup.py
+backend/backup_app.py
+backend/seed_questions_backup.py
+
+frontend/pages/assessment-result_backup.html
+frontend/pages/assessment-result_backup(1).html
+frontend/pages/coding-test_backup.html
+frontend/pages/my-profile_backup.html
+frontend/pages/profile_backup.html
+frontend/pages/profile_backup (2).html
+frontend/pages/technical-interview_backup.html

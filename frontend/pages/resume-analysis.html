@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Analysis | CareerPredict</title>
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;min-height:100vh;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    background:radial-gradient(circle at 20% 10%,#17254a 0,#090f20 38%,#050914 100%);
+    color:#e9f2ff;
+}
+.header{
+    height:76px;padding:0 7%;display:flex;align-items:center;
+    justify-content:space-between;border-bottom:1px solid rgba(120,160,230,.15);
+    background:rgba(5,9,20,.75);backdrop-filter:blur(14px);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:48px;height:48px;object-fit:contain}
+.brand-title{font-weight:800}.brand-sub{font-size:10px;color:#7f96b8;letter-spacing:1.5px}
+.back{color:#cde1ff;text-decoration:none}
+.container{width:min(1050px,92%);margin:42px auto 70px}
+.hero{text-align:center;margin-bottom:28px}
+.hero h1{font-size:34px;margin:0 0 10px}
+.hero p{color:#93a9ca;line-height:1.7}
+.card{
+    background:rgba(14,23,45,.82);border:1px solid rgba(120,160,230,.18);
+    border-radius:20px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+.upload{
+    border:1.5px dashed rgba(92,170,255,.45);border-radius:16px;
+    padding:38px;text-align:center;background:rgba(25,45,80,.25)
+}
+input[type=file]{margin:20px auto;display:block;color:#b9cbea}
+button{
+    border:0;border-radius:10px;padding:13px 22px;cursor:pointer;
+    font-weight:800;color:#fff;background:linear-gradient(90deg,#1683c8,#6a4bc3)
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+.status{margin-top:18px;color:#91a8c9}
+.result{display:none;margin-top:26px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+.metric{padding:18px;border-radius:14px;background:rgba(30,48,82,.55);border:1px solid rgba(120,160,230,.12)}
+.metric b{display:block;font-size:25px;margin-bottom:6px}.metric span{font-size:12px;color:#8fa6c7}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.box{padding:20px;border-radius:15px;background:rgba(8,15,31,.55);border:1px solid rgba(120,160,230,.12)}
+.box h3{margin-top:0}.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 10px;border-radius:999px;background:rgba(60,110,190,.18);color:#cfe3ff;font-size:12px}
+li{margin:9px 0;color:#b4c6df;line-height:1.5}
+.note{margin-top:18px;color:#7f96b8;font-size:12px;line-height:1.6}
+.error{color:#ff9da8}
+@media(max-width:760px){.grid,.two{grid-template-columns:1fr 1fr}.hero h1{font-size:27px}}
+@media(max-width:500px){.grid,.two{grid-template-columns:1fr}.header{padding:0 18px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <img src="../../assets/careerpredict-logo.png" alt="CareerPredict">
+    <div><div class="brand-title">CareerPredict</div><div class="brand-sub">RESUME INTELLIGENCE</div></div>
+  </div>
+  <a class="back" href="profile.html">← Dashboard</a>
+</header>
+
+<main class="container">
+<section class="hero">
+  <h1>📄 AI Resume Analysis</h1>
+  <p>Upload your resume and CareerPredict will extract skills, projects, experience signals and compare them with your target job role.</p>
+</section>
+
+<section class="card">
+  <div class="upload">
+    <h2>Upload Resume</h2>
+    <p>Supported: PDF or DOCX · Maximum 5 MB</p>
+    <input id="resumeFile" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+    <button id="analyzeBtn" onclick="analyzeResume()">🤖 Analyze Resume</button>
+    <div id="status" class="status">Your resume is processed locally by the project backend.</div>
+  </div>
+
+  <div id="result" class="result">
+    <h2>Resume Analysis Result</h2>
+    <div class="grid">
+      <div class="metric"><b id="resumeScore">--</b><span>Resume Score</span></div>
+      <div class="metric"><b id="roleMatch">--</b><span>Target Role Match</span></div>
+      <div class="metric"><b id="placement">--</b><span>Pre-Assessment Placement Estimate</span></div>
+      <div class="metric"><b id="education">--</b><span>Education Evidence</span></div>
+    </div>
+
+    <div class="two">
+      <div class="box"><h3>🧠 Detected Skills</h3><div id="skills" class="chips"></div></div>
+      <div class="box"><h3>⚠️ Recommended Skills</h3><div id="missing" class="chips"></div></div>
+      <div class="box"><h3>💪 Strengths</h3><ul id="strengths"></ul></div>
+      <div class="box"><h3>📚 Recommendations</h3><ul id="recommendations"></ul></div>
+    </div>
+    <div class="note">
+      The pre-assessment placement estimate is a transparent preliminary heuristic.
+      The project's trained placement model should be used with actual assessment features,
+      and later we will combine the completed assessment, coding test and AI-simulated interview.
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const API_BASE="http://127.0.0.1:5000";
+const user=JSON.parse(sessionStorage.getItem("careerpredict_user")||"null");
+
+if(!user){
+  document.getElementById("status").textContent="Please log in first.";
+  document.getElementById("analyzeBtn").disabled=true;
+}
+
+function setList(id,items){
+  const el=document.getElementById(id);
+  el.innerHTML="";
+  (items||[]).forEach(x=>{
+    const li=document.createElement("li"); li.textContent=x; el.appendChild(li);
+  });
+}
+function setChips(id,items){
+  const el=document.getElementById(id); el.innerHTML="";
+  if(!items || !items.length){el.innerHTML='<span class="chip">None detected</span>';return;}
+  items.forEach(x=>{
+    const s=document.createElement("span");s.className="chip";s.textContent=x;el.appendChild(s);
+  });
+}
+
+async function analyzeResume(){
+  const file=document.getElementById("resumeFile").files[0];
+  const status=document.getElementById("status");
+  const btn=document.getElementById("analyzeBtn");
+
+  if(!file){status.innerHTML='<span class="error">Please select a PDF or DOCX resume.</span>';return;}
+  if(file.size>5*1024*1024){status.innerHTML='<span class="error">Resume must be 5 MB or smaller.</span>';return;}
+
+  btn.disabled=true;
+  status.textContent="Extracting and analyzing your resume...";
+
+  const form=new FormData();
+  form.append("user_id",user.id);
+  form.append("resume",file);
+
+  try{
+    const response=await fetch(`${API_BASE}/api/resume/upload`,{method:"POST",body:form});
+    const data=await response.json();
+    if(!response.ok) throw new Error(data.error||"Resume analysis failed.");
+
+    const a=data.analysis;
+    document.getElementById("resumeScore").textContent=`${a.resume_score}%`;
+    document.getElementById("roleMatch").textContent=`${a.role_match_score}%`;
+    document.getElementById("placement").textContent=`${a.placement_estimate}%`;
+    document.getElementById("education").textContent=`${a.education_score}%`;
+
+    setChips("skills",a.detected_skills);
+    setChips("missing",a.missing_skills);
+    setList("strengths",a.strengths);
+    setList("recommendations",a.recommendations);
+
+    document.getElementById("result").style.display="block";
+    status.textContent="Resume analyzed successfully.";
+  }catch(err){
+    status.innerHTML=`<span class="error">${err.message}</span>`;
+  }finally{
+    btn.disabled=false;
+  }
+}
+</script>
+</body>
+</html>

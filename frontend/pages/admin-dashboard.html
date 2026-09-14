@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Dashboard | CareerPredict</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#071124;color:#edf5ff}nav{height:70px;border-bottom:1px solid #203454;background:#09172e;display:flex;align-items:center;justify-content:space-between;padding:0 5%}.brand{font-size:22px;font-weight:800}.brand span{color:#71edff}.navright{display:flex;gap:18px;align-items:center}.navright a,.navright button{color:#a9c0e4;text-decoration:none;background:none;border:0;cursor:pointer}.wrap{width:min(1200px,92%);margin:32px auto 60px}.hero{margin-bottom:25px}.eyebrow{color:#71edff;font-size:12px;font-weight:800;letter-spacing:2px}.hero h1{font-size:34px;margin:7px 0}.hero p{color:#8ea7ce}.grid{display:grid;grid-template-columns:350px 1fr;gap:22px}.card{border:1px solid #243b61;border-radius:18px;background:#0a1932;padding:23px;box-shadow:0 16px 50px rgba(0,0,0,.18)}h2{font-size:20px;margin:0 0 18px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;color:#9db6dd;font-size:12px;margin:0 0 6px}input,textarea{width:100%;padding:11px;border:1px solid #30476f;border-radius:9px;background:#07152d;color:#fff;outline:none}input:focus,textarea:focus{border-color:#71edff}.full{grid-column:1/-1}.branches{min-height:70px;resize:vertical}.actions{display:flex;gap:9px;margin-top:16px}.primary,.secondary,.danger{padding:10px 14px;border-radius:9px;border:0;cursor:pointer;font-weight:700}.primary{background:linear-gradient(90deg,#48dff8,#8a7dff);color:#04101f}.secondary{background:#132744;color:#b9cdf0;border:1px solid #30476f}.danger{background:#3b1820;color:#ffabb4;border:1px solid #73313d}.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.status{color:#71edff;font-size:13px}.company{border:1px solid #263d63;border-radius:14px;padding:17px;margin-bottom:12px;background:#0b1d39}.companyhead{display:flex;justify-content:space-between;gap:10px}.company h3{margin:0;font-size:18px}.badge{font-size:11px;padding:4px 8px;border-radius:99px;background:#123e46;color:#71edff}.badge.off{background:#38212a;color:#ffadb6}.criteria{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0;color:#a9bfe0;font-size:12px}.criteria strong{display:block;color:#edf5ff;font-size:14px;margin-top:3px}.branchesline{color:#9db6dd;font-size:12px;margin-bottom:13px}.empty{text-align:center;color:#718bb4;padding:45px 10px}.toast{position:fixed;right:22px;bottom:22px;padding:12px 16px;background:#10233f;border:1px solid #36537f;border-radius:10px;display:none}@media(max-width:900px){.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.criteria{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">Career<span>Predict</span> <small style="font-size:11px;color:#7894bd">ADMIN</small></div>
+  <div class="navright"><a href="admin-dashboard.html">Admin Dashboard</a><button id="logout">Logout</button></div>
+</nav>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">ADMINISTRATION</div>
+    <h1>Company Eligibility Management</h1>
+    <p>Configure academic and performance eligibility rules used by the student placement analysis.</p>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2 id="formTitle">Add Company</h2>
+      <form id="companyForm">
+        <div class="formgrid">
+          <div class="full"><label>Company Name</label><input id="company_name" required></div>
+          <div><label>Minimum 10th %</label><input id="tenth" type="number" min="0" max="100" step="0.01" value="60"></div>
+          <div><label>Minimum 12th %</label><input id="twelfth" type="number" min="0" max="100" step="0.01" value="60"></div>
+          <div><label>Minimum CGPA</label><input id="cgpa" type="number" min="0" max="10" step="0.01" value="7"></div>
+          <div><label>Maximum Backlogs</label><input id="backlogs" type="number" min="0" value="0"></div>
+          <div><label>Min Graduation Year</label><input id="min_year" type="number" min="2000" max="2100" placeholder="Optional"></div>
+          <div><label>Max Graduation Year</label><input id="max_year" type="number" min="2000" max="2100" placeholder="Optional"></div>
+          <div><label>Minimum Assessment Score %</label><input id="assessment_score" type="number" min="0" max="100" step="0.01" value="0"></div>
+          <div><label>Minimum Coding Test Score %</label><input id="coding_score" type="number" min="0" max="100" step="0.01" value="0"></div>
+          <div><label>Minimum Interview Score %</label><input id="interview_score" type="number" min="0" max="100" step="0.01" value="0"></div>
+          <div class="full"><label>Eligible Branches (comma separated, or All)</label><textarea class="branches" id="branches" placeholder="CSE, ECE, IT"></textarea></div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="submit" id="saveBtn">Add Company</button>
+          <button class="secondary" type="button" id="cancelBtn" style="display:none">Cancel Edit</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="toolbar"><h2>Configured Companies</h2><span class="status" id="status">Loading...</span></div>
+      <div id="companies"></div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const API_BASE="http://127.0.0.1:5000";
+const user=JSON.parse(sessionStorage.getItem("careerpredict_user")||"null");
+if(!user || String(user.role).toLowerCase()!=="admin"){location.href="admin-login.html";}
+let editingId=null;
+
+function showToast(text){const t=document.getElementById("toast");t.textContent=text;t.style.display="block";setTimeout(()=>t.style.display="none",2500)}
+function val(id){return document.getElementById(id).value}
+function setVal(id,v){document.getElementById(id).value=v??""}
+
+async function loadCompanies(){
+  const status=document.getElementById("status");
+  status.textContent="Loading...";
+  try{
+    const r=await fetch(`${API_BASE}/api/admin/companies?user_id=${encodeURIComponent(user.id)}`);
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||"Unable to load companies.");
+    renderCompanies(d.companies||[]);
+    status.textContent=`${(d.companies||[]).length} configured`;
+  }catch(e){status.textContent="Error";showToast(e.message)}
+}
+
+function renderCompanies(items){
+  const root=document.getElementById("companies");
+  if(!items.length){root.innerHTML='<div class="empty">No company criteria configured yet.<br>Add your first company using the form.</div>';return}
+  root.innerHTML=items.map(c=>`
+    <div class="company">
+      <div class="companyhead"><h3>${escapeHtml(c.company_name)}</h3><span class="badge ${c.is_active?'':'off'}">${c.is_active?'ACTIVE':'INACTIVE'}</span></div>
+      <div class="criteria">
+        <div>10th<strong>${c.minimum_tenth_percentage}%</strong></div>
+        <div>12th<strong>${c.minimum_twelfth_percentage}%</strong></div>
+        <div>CGPA<strong>${c.minimum_cgpa}</strong></div>
+        <div>Max Backlogs<strong>${c.maximum_backlogs}</strong></div>
+        <div>Min Year<strong>${c.minimum_graduation_year??'—'}</strong></div>
+        <div>Max Year<strong>${c.maximum_graduation_year??'—'}</strong></div>
+        <div>Assessment<strong>${Number(c.minimum_assessment_score||0)}%</strong></div>
+        <div>Coding Test<strong>${Number(c.minimum_coding_test_score||0)}%</strong></div>
+        <div>Interview<strong>${Number(c.minimum_interview_score||0)}%</strong></div>
+      </div>
+      <div class="branchesline">Branches: ${escapeHtml(c.eligible_branches?.length?c.eligible_branches.join(", "):"All")}</div>
+      <div class="actions">
+        <button class="secondary" onclick='editCompany(${JSON.stringify(c)})'>Edit</button>
+        <button class="danger" onclick="deleteCompany(${c.id})">Delete</button>
+      </div>
+    </div>`).join("");
+}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+window.editCompany=function(c){
+  editingId=c.id;document.getElementById("formTitle").textContent="Edit Company";document.getElementById("saveBtn").textContent="Update Company";document.getElementById("cancelBtn").style.display="inline-block";
+  setVal("company_name",c.company_name);setVal("tenth",c.minimum_tenth_percentage);setVal("twelfth",c.minimum_twelfth_percentage);setVal("cgpa",c.minimum_cgpa);setVal("backlogs",c.maximum_backlogs);setVal("min_year",c.minimum_graduation_year);setVal("max_year",c.maximum_graduation_year);setVal("assessment_score",c.minimum_assessment_score);setVal("coding_score",c.minimum_coding_test_score);setVal("interview_score",c.minimum_interview_score);setVal("branches",(c.eligible_branches||[]).join(", "));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function resetForm(){editingId=null;document.getElementById("formTitle").textContent="Add Company";document.getElementById("saveBtn").textContent="Add Company";document.getElementById("cancelBtn").style.display="none";document.getElementById("companyForm").reset();setVal("tenth",60);setVal("twelfth",60);setVal("cgpa",7);setVal("backlogs",0);setVal("assessment_score",0);setVal("coding_score",0);setVal("interview_score",0)}
+document.getElementById("cancelBtn").onclick=resetForm;
+
+document.getElementById("companyForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const payload={company_name:val("company_name").trim(),minimum_tenth_percentage:Number(val("tenth")),minimum_twelfth_percentage:Number(val("twelfth")),minimum_cgpa:Number(val("cgpa")),maximum_backlogs:Number(val("backlogs")),minimum_graduation_year:val("min_year")||null,maximum_graduation_year:val("max_year")||null,minimum_assessment_score:Number(val("assessment_score")),minimum_coding_test_score:Number(val("coding_score")),minimum_interview_score:Number(val("interview_score")),eligible_branches:val("branches")};
+  const url=editingId?`${API_BASE}/api/admin/companies/${editingId}?user_id=${encodeURIComponent(user.id)}`:`${API_BASE}/api/admin/companies?user_id=${encodeURIComponent(user.id)}`;
+  try{
+    const r=await fetch(url,{method:editingId?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||"Save failed.");
+    showToast(editingId?"Company updated.":"Company added.");resetForm();loadCompanies();
+  }catch(e){showToast(e.message)}
+});
+window.deleteCompany=async function(id){
+  if(!confirm("Delete this company eligibility rule?"))return;
+  try{
+    const r=await fetch(`${API_BASE}/api/admin/companies/${id}?user_id=${encodeURIComponent(user.id)}`,{method:"DELETE"});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||"Delete failed.");
+    showToast("Company deleted.");loadCompanies();
+  }catch(e){showToast(e.message)}
+}
+document.getElementById("logout").onclick=()=>{sessionStorage.removeItem("careerpredict_user");location.href="login.html"};
+loadCompanies();
+</script>
+</body>
+</html>

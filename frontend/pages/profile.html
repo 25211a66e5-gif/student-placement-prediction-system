@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Profile | CareerPredict</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            color: #ffffff;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(0, 229, 255, 0.12), transparent 30%),
+                radial-gradient(circle at 85% 10%, rgba(124, 58, 237, 0.14), transparent 30%),
+                radial-gradient(circle at 50% 100%, rgba(0, 150, 255, 0.08), transparent 35%),
+                #050816;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            width: 100%;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(5, 8, 22, 0.88);
+            backdrop-filter: blur(18px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            width: min(1180px, 92%);
+            margin: auto;
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand img {
+            width: 165px;
+            max-width: 58px;
+            height: auto;
+            display: block;
+        }
+        .brand-name {
+            color: #ffffff;
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+        .brand-name span {
+            color: #55e9ff;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: #b8c7e8;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .logout-btn {
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            background: rgba(0, 229, 255, 0.08);
+            color: #8eefff;
+            padding: 9px 16px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(0, 229, 255, 0.15);
+        }
+
+        /* MAIN */
+
+        .container {
+            width: min(1080px, 92%);
+            margin: auto;
+        }
+
+        .page-header {
+            padding: 55px 0 28px;
+        }
+
+        .eyebrow {
+            color: #61e8ff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(30px, 5vw, 48px);
+            line-height: 1.1;
+            margin-bottom: 14px;
+        }
+
+        .page-header p {
+            color: #9baac9;
+            max-width: 700px;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .required-note {
+            margin-top: 16px;
+            color: #aab8d4;
+            font-size: 13px;
+        }
+
+        .required {
+            color: #ff6b9d;
+            font-weight: bold;
+        }
+
+        /* FORM CARD */
+
+        .profile-card {
+            margin-bottom: 60px;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.09);
+            background: rgba(11, 17, 39, 0.76);
+            backdrop-filter: blur(20px);
+            box-shadow:
+                0 25px 80px rgba(0,0,0,0.28),
+                inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+
+        .section {
+            padding: 24px 0 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .section:first-child {
+            padding-top: 0;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 7px;
+            font-size: 20px;
+        }
+
+        .section-number {
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: rgba(0, 229, 255, 0.09);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            color: #61e8ff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .section-description {
+            color: #8291b2;
+            font-size: 13px;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #dbe5ff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.1);
+            outline: none;
+            border-radius: 11px;
+            background: rgba(3, 8, 24, 0.78);
+            color: #ffffff;
+            padding: 13px 14px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #56627c;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: rgba(0, 229, 255, 0.55);
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.08);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #0b1127;
+            color: #ffffff;
+        }
+
+        textarea {
+            min-height: 115px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .field-help {
+            color: #687695;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* SKILLS */
+
+        .skill-input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .skill-input-row input {
+            flex: 1;
+        }
+
+        .add-skill-btn {
+            flex: 0 0 auto;
+            padding: 0 20px;
+            border: 1px solid rgba(0,229,255,0.35);
+            border-radius: 11px;
+            background: rgba(0,229,255,0.1);
+            color: #71edff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .add-skill-btn:hover {
+            background: rgba(0,229,255,0.18);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 14px;
+            min-height: 10px;
+        }
+
+        .skill-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 11px;
+            border-radius: 20px;
+            background: rgba(124,58,237,0.13);
+            border: 1px solid rgba(124,58,237,0.3);
+            color: #d8c9ff;
+            font-size: 13px;
+        }
+
+        .remove-skill {
+            border: none;
+            background: transparent;
+            color: #ff91b5;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .skills-error {
+            display: none;
+            margin-top: 10px;
+            color: #ff8eaf;
+            font-size: 13px;
+        }
+
+
+        /* RESUME UPLOAD */
+        .resume-upload-box {
+            border: 1px dashed rgba(0, 229, 255, 0.35);
+            border-radius: 14px;
+            padding: 20px;
+            background: rgba(0, 229, 255, 0.035);
+        }
+
+        .resume-upload-box input[type="file"] {
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .resume-file-name {
+            margin-top: 9px;
+            color: #8eefff;
+            font-size: 12px;
+            min-height: 17px;
+        }
+
+        .resume-required {
+            color: #ff6b9d;
+            font-weight: bold;
+        }
+
+        .resume-analysis-status {
+            display: none;
+            margin-top: 12px;
+            padding: 11px 13px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .resume-analysis-status.success {
+            display: block;
+            background: rgba(34,197,94,0.09);
+            border: 1px solid rgba(34,197,94,0.25);
+            color: #82f2a7;
+        }
+
+        .resume-analysis-status.error {
+            display: block;
+            background: rgba(239,68,68,0.09);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #ff9b9b;
+        }
+
+        /* STATUS */
+
+        .message {
+            display: none;
+            padding: 13px 15px;
+            margin-top: 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.success {
+            display: block;
+            background: rgba(34,197,94,0.09);
+            border: 1px solid rgba(34,197,94,0.25);
+            color: #82f2a7;
+        }
+
+        .message.error {
+            display: block;
+            background: rgba(239,68,68,0.09);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #ff9b9b;
+        }
+
+        /* BUTTON */
+
+        .submit-area {
+            padding-top: 28px;
+        }
+
+        .save-btn {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #00d9ff, #6d4aff);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 12px 35px rgba(0, 174, 255, 0.18);
+            transition: 0.2s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 40px rgba(0, 174, 255, 0.25);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .continue-note {
+            text-align: center;
+            margin-top: 12px;
+            color: #64718e;
+            font-size: 12px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 25px 0;
+            text-align: center;
+            color: #56627c;
+            font-size: 12px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            .nav-inner {
+                min-height: 68px;
+            }
+
+            .brand img {
+                width: 165px;
+            }
+
+            .nav-link {
+                display: none;
+            }
+
+            .page-header {
+                padding-top: 38px;
+            }
+
+            .profile-card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .skill-input-row {
+                flex-direction: column;
+            }
+
+            .add-skill-btn {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+        <div class="nav-inner">
+
+            <a href="../index.html" class="brand">
+
+    <img
+        src="../../assets/careerpredict-logo.png"
+        alt="CareerPredict Logo"
+    >
+
+    <div class="brand-name">
+        Student Placement<span> Predictor</span>
+    </div>
+
+</a>
+
+            <div class="nav-actions">
+                <a href="../index.html" class="nav-link">
+                    Home
+                </a>
+
+                <a href="my-profile.html" class="nav-link">
+                    My Profile
+                </a>
+
+                <button
+                    type="button"
+                    class="logout-btn"
+                    onclick="logout()"
+                >
+                    Logout
+                </button>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="container">
+
+        <header class="page-header">
+
+            <div class="eyebrow">
+                CAREERPREDICT • STUDENT PROFILE
+            </div>
+
+            <h1>
+                Build your placement profile
+            </h1>
+
+            <p>
+                Enter your academic background, career goal and current
+                technical skills. This information will be used to
+                personalize your placement assessment and career-readiness
+                analysis.
+            </p>
+
+            <div class="required-note">
+                <span class="required">*</span>
+                Required fields must be completed before continuing.
+            </div>
+
+        </header>
+
+
+        <!-- PROFILE FORM -->
+
+        <div class="profile-card">
+
+            <form id="profileForm" novalidate>
+
+
+                <!-- SECTION 1 -->
+
+                <section class="section">
+
+                    <h2 class="section-title">
+                        <span class="section-number">01</span>
+                        Academic Information
+                    </h2>
+
+                    <p class="section-description">
+                        Your academic details are required for placement
+                        prediction and company eligibility analysis.
+                    </p>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="tenth">
+                                10th Percentage
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="tenth"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 85.50"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="twelfth">
+                                12th Percentage
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="twelfth"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                                placeholder="e.g. 82.00"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="cgpa">
+                                B.Tech / B.E. CGPA
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="cgpa"
+                                min="0"
+                                max="10"
+                                step="0.01"
+                                placeholder="e.g. 8.25"
+                                required
+                            >
+
+                            <span class="field-help">
+                                Enter your current overall CGPA on a 10-point scale.
+                            </span>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="graduationYear">
+                                Graduation Year
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="graduationYear"
+                                min="2020"
+                                max="2100"
+                                placeholder="e.g. 2027"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="backlogs">
+                                Current Backlogs
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="backlogs"
+                                min="0"
+                                step="1"
+                                value=""
+                                placeholder="e.g. 0"
+                                required
+                            >
+
+                            <span class="field-help">
+                                Enter 0 if you currently have no backlogs.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SECTION 2 -->
+
+                <section class="section">
+
+                    <h2 class="section-title">
+                        <span class="section-number">02</span>
+                        Career Direction
+                    </h2>
+
+                    <p class="section-description">
+                        Your branch and target role determine the direction
+                        of your personalized placement assessment.
+                    </p>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="branch">
+                                Engineering Branch
+                                <span class="required">*</span>
+                            </label>
+
+                            <select id="branch" required>
+
+                                <option value="">
+                                    Select your branch
+                                </option>
+
+                                <option>
+                                    Computer Science / CSE
+                                </option>
+
+                                <option>
+                                    Information Technology / IT
+                                </option>
+
+                                <option>
+                                    Artificial Intelligence & Data Science
+                                </option>
+
+                                <option>
+                                    Electronics & Communication / ECE
+                                </option>
+
+                                <option>
+                                    Electrical & Electronics / EEE
+                                </option>
+
+                                <option>
+                                    Mechanical Engineering
+                                </option>
+
+                                <option>
+                                    Civil Engineering
+                                </option>
+
+                                <option>
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="targetRole">
+                                Target Job Role
+                                <span class="required">*</span>
+                            </label>
+
+                            <select id="targetRole" required>
+
+                                <option value="">
+                                    Select your target role
+                                </option>
+
+                                <option>
+                                    Software Developer
+                                </option>
+
+                                <option>
+                                    Full-Stack Developer
+                                </option>
+
+                                <option>
+                                    Data Analyst
+                                </option>
+
+                                <option>
+                                    Data Scientist
+                                </option>
+
+                                <option>
+                                    ML / AI Engineer
+                                </option>
+
+                                <option>
+                                    Backend Developer
+                                </option>
+
+                                <option>
+                                    Frontend Developer
+                                </option>
+
+                                <option>
+                                    Embedded Engineer
+                                </option>
+
+                                <option>
+                                    Other Technical Role
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SECTION 3 -->
+
+                <section class="section">
+
+                    <h2 class="section-title">
+                        <span class="section-number">03</span>
+                        Technical Skills
+                        <span class="required">*</span>
+                    </h2>
+
+                    <p class="section-description">
+                        Add at least one technical skill. You can add
+                        multiple programming languages, frameworks,
+                        databases and other technologies you know.
+                    </p>
+
+
+                    <div class="form-group">
+
+                        <label for="skillInput">
+                            Add Technical Skill
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="skill-input-row">
+
+                            <input
+                                type="text"
+                                id="skillInput"
+                                placeholder="e.g. Java, Python, SQL, React"
+                            >
+
+                            <button
+                                type="button"
+                                class="add-skill-btn"
+                                onclick="addSkill()"
+                            >
+                                + Add Skill
+                            </button>
+
+                        </div>
+
+                        <div
+                            id="skillsList"
+                            class="skills-list"
+                        ></div>
+
+                        <div
+                            id="skillsError"
+                            class="skills-error"
+                        >
+                            Please add at least one technical skill.
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SECTION 4 -->
+
+                <section class="section">
+
+                    <h2 class="section-title">
+                        <span class="section-number">04</span>
+                        Experience & Achievements
+                    </h2>
+
+                    <p class="section-description">
+                        These fields are optional, but adding them can
+                        provide more useful career-readiness recommendations.
+                    </p>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="certifications">
+                                Certifications
+                            </label>
+
+                            <textarea
+                                id="certifications"
+                                placeholder="Example: AWS Cloud Practitioner, NPTEL Java, Google Data Analytics..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="projects">
+                                Projects
+                            </label>
+
+                            <textarea
+                                id="projects"
+                                placeholder="Describe your academic or personal projects..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="internships">
+                                Internships
+                            </label>
+
+                            <textarea
+                                id="internships"
+                                placeholder="Company, role, duration and technologies used..."
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SECTION 5 -->
+
+                <section class="section">
+
+                    <h2 class="section-title">
+                        <span class="section-number">05</span>
+                        Resume & AI Analysis
+                        <span class="resume-required">*</span>
+                    </h2>
+
+                    <p class="section-description">
+                        Upload your latest resume. CareerPredict will analyze the
+                        resume against your selected target job role before starting
+                        the placement assessment.
+                    </p>
+
+                    <div class="resume-upload-box">
+                        <div class="form-group">
+                            <label for="resumeFile">
+                                Upload Resume <span class="resume-required">*</span>
+                            </label>
+
+                            <input
+                                type="file"
+                                id="resumeFile"
+                                
+                                required
+                            >
+
+                            <span class="field-help">
+                                Most resume formats are accepted • Maximum 10 MB.
+                                PDF, DOCX, DOC, RTF, text files and image resumes can be processed;
+                                unusual formats are attempted automatically.
+                            </span>
+
+                            <div id="resumeFileName" class="resume-file-name"></div>
+                            <div id="resumeAnalysisStatus" class="resume-analysis-status"></div>
+                        </div>
+                    </div>
+
+                </section>
+
+
+                <!-- SECTION 6 -->
+
+                <section class="section">
+
+                    <h2 class="section-title">
+                        <span class="section-number">06</span>
+                        Professional Links
+                    </h2>
+
+                    <p class="section-description">
+                        Optional links that can help present your professional
+                        profile and project work.
+                    </p>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="github">
+                                GitHub
+                            </label>
+
+                            <input
+                                type="url"
+                                id="github"
+                                placeholder="https://github.com/username"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="linkedin">
+                                LinkedIn
+                            </label>
+
+                            <input
+                                type="url"
+                                id="linkedin"
+                                placeholder="https://linkedin.com/in/username"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="portfolio">
+                                Portfolio
+                            </label>
+
+                            <input
+                                type="url"
+                                id="portfolio"
+                                placeholder="https://yourportfolio.com"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="resume">
+                                Resume Link <span class="field-help">(Optional)</span>
+                            </label>
+
+                            <input
+                                type="url"
+                                id="resume"
+                                placeholder="https://..."
+                            >
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MESSAGE -->
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+
+                <!-- SUBMIT -->
+
+                <div class="submit-area">
+
+                    <button
+                        type="submit"
+                        id="saveButton"
+                        class="save-btn"
+                    >
+                        Save Profile & Continue →
+                    </button>
+
+                    <div class="continue-note">
+                        Your profile will be saved before starting the assessment.
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        CareerPredict • Student Placement Prediction System using Machine Learning
+        © 2026
+    </footer>
+
+
+    <script>
+
+        /* ---------------------------------------
+           USER SESSION
+        --------------------------------------- */
+
+        const storedUser = sessionStorage.getItem("careerpredict_user");
+
+        let user = null;
+
+        try {
+            user = storedUser ? JSON.parse(storedUser) : null;
+        } catch (error) {
+            user = null;
+        }
+
+
+        if (!user || !user.id) {
+
+            window.location.href = "login.html";
+
+        }
+
+
+        /* ---------------------------------------
+           TECHNICAL SKILLS
+        --------------------------------------- */
+
+        let skills = [];
+
+
+        function renderSkills() {
+
+            const skillsList =
+                document.getElementById("skillsList");
+
+            skillsList.innerHTML = "";
+
+            skills.forEach(function(skill, index) {
+
+                const tag =
+                    document.createElement("div");
+
+                tag.className = "skill-tag";
+
+                tag.innerHTML = `
+                    <span>${escapeHtml(skill)}</span>
+                    <button
+                        type="button"
+                        class="remove-skill"
+                        onclick="removeSkill(${index})"
+                        aria-label="Remove ${escapeHtml(skill)}"
+                    >
+                        ×
+                    </button>
+                `;
+
+                skillsList.appendChild(tag);
+
+            });
+
+            document.getElementById("skillsError").style.display =
+                skills.length === 0 ? "none" : "none";
+        }
+
+
+        function addSkill() {
+
+            const input =
+                document.getElementById("skillInput");
+
+            const skill =
+                input.value.trim();
+
+            if (!skill) {
+
+                input.focus();
+
+                return;
+            }
+
+
+            /* Prevent duplicate skills */
+
+            const duplicate =
+                skills.some(function(existingSkill) {
+
+                    return existingSkill.toLowerCase() ===
+                        skill.toLowerCase();
+
+                });
+
+
+            if (duplicate) {
+
+                showMessage(
+                    "This technical skill has already been added.",
+                    "error"
+                );
+
+                input.focus();
+
+                return;
+            }
+
+
+            skills.push(skill);
+
+            input.value = "";
+
+            renderSkills();
+
+            hideMessage();
+
+            input.focus();
+        }
+
+
+        function removeSkill(index) {
+
+            skills.splice(index, 1);
+
+            renderSkills();
+        }
+
+
+        document
+            .getElementById("skillInput")
+            .addEventListener("keydown", function(event) {
+
+                if (event.key === "Enter") {
+
+                    event.preventDefault();
+
+                    addSkill();
+
+                }
+
+            });
+
+
+
+        /* ---------------------------------------
+           RESUME FILE SELECTION
+        --------------------------------------- */
+
+        const resumeFileInput =
+            document.getElementById("resumeFile");
+
+        resumeFileInput.addEventListener("change", function () {
+            const file = this.files[0];
+            const nameBox =
+                document.getElementById("resumeFileName");
+
+            if (!file) {
+                nameBox.textContent = "";
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                this.value = "";
+                nameBox.textContent = "";
+                showMessage(
+                    "Resume file must be 10 MB or smaller.",
+                    "error"
+                );
+                return;
+            }
+
+            nameBox.textContent =
+                "Selected: " + file.name;
+            hideMessage();
+        });
+
+
+        /* ---------------------------------------
+           FORM SUBMISSION
+        --------------------------------------- */
+
+        document
+            .getElementById("profileForm")
+            .addEventListener("submit", async function(event) {
+
+                event.preventDefault();
+
+
+                hideMessage();
+
+
+                /* Technical skill requirement */
+
+                if (skills.length === 0) {
+
+                    document.getElementById("skillsError").style.display =
+                        "block";
+
+                    showMessage(
+                        "Please add at least one technical skill before continuing.",
+                        "error"
+                    );
+
+                    document
+                        .getElementById("skillInput")
+                        .focus();
+
+                    return;
+                }
+
+
+                /* Get required values */
+
+                const tenth =
+                    document.getElementById("tenth").value.trim();
+
+                const twelfth =
+                    document.getElementById("twelfth").value.trim();
+
+                const cgpa =
+                    document.getElementById("cgpa").value.trim();
+
+                const graduationYear =
+                    document.getElementById("graduationYear").value.trim();
+
+                const backlogs =
+                    document.getElementById("backlogs").value.trim();
+
+                const branch =
+                    document.getElementById("branch").value.trim();
+
+                const targetRole =
+                    document.getElementById("targetRole").value.trim();
+
+
+                /* Required field validation */
+
+                if (
+                    tenth === "" ||
+                    twelfth === "" ||
+                    cgpa === "" ||
+                    graduationYear === "" ||
+                    backlogs === "" ||
+                    branch === "" ||
+                    targetRole === ""
+                ) {
+
+                    showMessage(
+                        "Please complete all required fields marked with *.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                /* Numeric validation */
+
+                const tenthValue =
+                    Number(tenth);
+
+                const twelfthValue =
+                    Number(twelfth);
+
+                const cgpaValue =
+                    Number(cgpa);
+
+                const graduationYearValue =
+                    Number(graduationYear);
+
+                const backlogsValue =
+                    Number(backlogs);
+
+
+                if (
+                    Number.isNaN(tenthValue) ||
+                    tenthValue < 0 ||
+                    tenthValue > 100
+                ) {
+
+                    showMessage(
+                        "10th percentage must be between 0 and 100.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    Number.isNaN(twelfthValue) ||
+                    twelfthValue < 0 ||
+                    twelfthValue > 100
+                ) {
+
+                    showMessage(
+                        "12th percentage must be between 0 and 100.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    Number.isNaN(cgpaValue) ||
+                    cgpaValue < 0 ||
+                    cgpaValue > 10
+                ) {
+
+                    showMessage(
+                        "CGPA must be between 0 and 10.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    Number.isNaN(graduationYearValue) ||
+                    graduationYearValue < 2020 ||
+                    graduationYearValue > 2100
+                ) {
+
+                    showMessage(
+                        "Please enter a valid graduation year.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    Number.isNaN(backlogsValue) ||
+                    backlogsValue < 0 ||
+                    !Number.isInteger(backlogsValue)
+                ) {
+
+                    showMessage(
+                        "Backlogs must be a whole number of 0 or more.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                /* Resume requirement */
+
+                const selectedResume =
+                    document.getElementById("resumeFile").files[0];
+
+                if (!selectedResume) {
+                    showMessage(
+                        "Please upload your resume before continuing.",
+                        "error"
+                    );
+
+                    document
+                        .getElementById("resumeFile")
+                        .focus();
+
+                    return;
+                }
+
+                if (selectedResume.size > 10 * 1024 * 1024) {
+                    showMessage(
+                        "Resume file must be 10 MB or smaller.",
+                        "error"
+                    );
+                    return;
+                }
+
+
+                /* Build API request */
+
+                const profileData = {
+
+                    user_id: user.id,
+
+                    tenth_percentage: tenthValue,
+
+                    twelfth_percentage: twelfthValue,
+
+                    cgpa: cgpaValue,
+
+                    graduation_year: graduationYearValue,
+
+                    backlogs: backlogsValue,
+
+                    branch: branch,
+
+                    target_job_role: targetRole,
+
+                    technical_skills: skills.join(", "),
+
+                    certifications:
+                        document
+                            .getElementById("certifications")
+                            .value
+                            .trim(),
+
+                    projects:
+                        document
+                            .getElementById("projects")
+                            .value
+                            .trim(),
+
+                    internships:
+                        document
+                            .getElementById("internships")
+                            .value
+                            .trim(),
+
+                    github_url:
+                        document
+                            .getElementById("github")
+                            .value
+                            .trim(),
+
+                    linkedin_url:
+                        document
+                            .getElementById("linkedin")
+                            .value
+                            .trim(),
+
+                    portfolio_url:
+                        document
+                            .getElementById("portfolio")
+                            .value
+                            .trim(),
+
+                    resume_url:
+                        document
+                            .getElementById("resume")
+                            .value
+                            .trim()
+
+                };
+
+
+                const saveButton =
+                    document.getElementById("saveButton");
+
+
+                saveButton.disabled = true;
+
+                saveButton.textContent =
+                    "Saving Profile...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "http://127.0.0.1:5000/api/profile",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(profileData)
+                            }
+                        );
+
+
+                    const result =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result.error ||
+                            result.message ||
+                            "Unable to save profile."
+                        );
+
+                    }
+
+
+                    /* ---------------------------------------
+                       RESUME UPLOAD + ANALYSIS
+                    --------------------------------------- */
+
+                    const resumeFile =
+                        document.getElementById("resumeFile").files[0];
+
+                    if (!resumeFile) {
+                        throw new Error(
+                            "Please upload your resume before continuing."
+                        );
+                    }
+
+                    saveButton.textContent =
+                        "Analyzing Resume...";
+
+                    showMessage(
+                        "Profile saved. Uploading and analyzing your resume...",
+                        "success"
+                    );
+
+                    const resumeFormData = new FormData();
+                    resumeFormData.append(
+                        "user_id",
+                        user.id
+                    );
+                    resumeFormData.append(
+                        "target_job_role",
+                        targetRole
+                    );
+                    resumeFormData.append(
+                        "resume",
+                        resumeFile
+                    );
+
+                    const resumeResponse =
+                        await fetch(
+                            "http://127.0.0.1:5000/api/resume/upload",
+                            {
+                                method: "POST",
+                                body: resumeFormData
+                            }
+                        );
+
+                    const resumeResult =
+                        await resumeResponse.json();
+
+                    if (!resumeResponse.ok) {
+                        throw new Error(
+                            resumeResult.error ||
+                            resumeResult.message ||
+                            "Resume analysis failed."
+                        );
+                    }
+
+                    const analysis =
+                        resumeResult.analysis || {};
+
+                    showMessage(
+                        "✓ Profile saved  •  ✓ Resume analyzed. Starting your placement assessment...",
+                        "success"
+                    );
+
+                    saveButton.textContent =
+                        "Resume Analyzed ✓";
+
+                    setTimeout(function () {
+                        window.location.href =
+                            "assessment.html";
+                    }, 1200);
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    showMessage(
+                        error.message ||
+                        "Unable to connect to the CareerPredict server.",
+                        "error"
+                    );
+
+
+                    saveButton.disabled = false;
+
+                    saveButton.textContent =
+                        "Save Profile & Continue →";
+
+                }
+
+            });
+
+
+        /* ---------------------------------------
+           LOAD EXISTING PROFILE
+        --------------------------------------- */
+
+        async function loadProfile() {
+
+            if (!user || !user.id) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://127.0.0.1:5000/api/profile/" +
+                        encodeURIComponent(user.id)
+                    );
+
+
+                if (!response.ok) {
+
+                    /*
+                     Profile may not exist yet.
+                     This is normal for a new student.
+                    */
+
+                    return;
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                if (!result.profile) {
+                    return;
+                }
+
+
+                const profile =
+                    result.profile;
+
+
+                /* Academic information */
+
+                if (profile.tenth_percentage !== null &&
+                    profile.tenth_percentage !== undefined) {
+
+                    document.getElementById("tenth").value =
+                        profile.tenth_percentage;
+
+                }
+
+
+                if (profile.twelfth_percentage !== null &&
+                    profile.twelfth_percentage !== undefined) {
+
+                    document.getElementById("twelfth").value =
+                        profile.twelfth_percentage;
+
+                }
+
+
+                if (profile.cgpa !== null &&
+                    profile.cgpa !== undefined) {
+
+                    document.getElementById("cgpa").value =
+                        profile.cgpa;
+
+                }
+
+
+                if (profile.graduation_year !== null &&
+                    profile.graduation_year !== undefined) {
+
+                    document.getElementById("graduationYear").value =
+                        profile.graduation_year;
+
+                }
+
+
+                if (profile.backlogs !== null &&
+                    profile.backlogs !== undefined) {
+
+                    document.getElementById("backlogs").value =
+                        profile.backlogs;
+
+                }
+
+
+                /* Career information */
+
+                if (profile.branch) {
+
+                    document.getElementById("branch").value =
+                        profile.branch;
+
+                }
+
+
+                if (profile.target_job_role) {
+
+                    document.getElementById("targetRole").value =
+                        profile.target_job_role;
+
+                }
+
+
+                /* Technical skills */
+
+                if (profile.technical_skills) {
+
+                    skills =
+                        profile.technical_skills
+                            .split(",")
+                            .map(function(skill) {
+                                return skill.trim();
+                            })
+                            .filter(function(skill) {
+                                return skill.length > 0;
+                            });
+
+                    renderSkills();
+
+                }
+
+
+                /* Optional information */
+
+                document.getElementById("certifications").value =
+                    profile.certifications || "";
+
+                document.getElementById("projects").value =
+                    profile.projects || "";
+
+                document.getElementById("internships").value =
+                    profile.internships || "";
+
+                document.getElementById("github").value =
+                    profile.github_url || "";
+
+                document.getElementById("linkedin").value =
+                    profile.linkedin_url || "";
+
+                document.getElementById("portfolio").value =
+                    profile.portfolio_url || "";
+
+                document.getElementById("resume").value =
+                    profile.resume_url || "";
+
+                /* File inputs cannot be restored programmatically.
+                   A previously uploaded resume is therefore shown only as a note. */
+                if (profile.resume_url) {
+                    document.getElementById("resumeFileName").textContent =
+                        "A resume link is already saved. Upload the latest resume to analyze it again.";
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Unable to load existing profile:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* ---------------------------------------
+           MESSAGE HELPERS
+        --------------------------------------- */
+
+        function showMessage(text, type) {
+
+            const message =
+                document.getElementById("message");
+
+            message.textContent = text;
+
+            message.className =
+                "message " + type;
+
+        }
+
+
+        function hideMessage() {
+
+            const message =
+                document.getElementById("message");
+
+            message.textContent = "";
+
+            message.className = "message";
+
+        }
+
+
+        /* ---------------------------------------
+           HTML ESCAPE
+        --------------------------------------- */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* ---------------------------------------
+           LOGOUT
+        --------------------------------------- */
+
+        function logout() {
+
+            sessionStorage.removeItem(
+                "careerpredict_user"
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+
+        /* ---------------------------------------
+           INITIALIZE
+        --------------------------------------- */
+
+        loadProfile();
+
+    </script>
+
+</body>
+</html>
